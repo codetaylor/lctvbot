@@ -336,7 +336,7 @@ var BanHammerPlugin = function(app, config, io, client) {
 
     //console.log(JSON.stringify(stanza.root(), null, 2));
 
-    client.sendChat(nick, 'Your ban has been lifted from ' + config.room + ', you may come back.');
+    // client.sendChat(nick, 'Your ban has been lifted from ' + config.room + ', you may come back.');
 
     client.send(stanza);
 
