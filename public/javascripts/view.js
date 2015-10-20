@@ -11,7 +11,7 @@ $(document).ready(function() {
       var id = getId(data.from);
       var html = tmpl('message_popup_tmpl', {
         id: m_id, 
-        style: data.style,
+        style: data.style + ' ' + data.from.split('/')[1],
         icon: data.image_url, 
         user: id.user, 
         message: data.body 
@@ -26,6 +26,19 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  socket.on('sk3lls:spammer', function(data) {
+    console.log('Spammer: ' + JSON.stringify(data, null, 1));
+    var nick = data.from.split('/')[1];
+    $('.' + nick).each(function() {
+      $(this).remove();
+    });
+    for (var i = queue.length - 1; i >= 0; --i) {
+      if (queue[i].from == data.from) {
+        queue.pop();
+        console.log('Removed message index ' + i);
+      }
+    }
+  });
   socket.on('message', function(data) {
     //console.log('message: ');
     //console.log(data);

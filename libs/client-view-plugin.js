@@ -69,7 +69,7 @@ var ClientViewPlugin = function(app, config, io, client) {
 
     if (isSelf && body.indexOf('!') === 0) {
       // if the message is from an op and command
-      
+
 
     } else if (body.indexOf('!') === 0) { // is general user
 

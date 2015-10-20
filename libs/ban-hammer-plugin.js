@@ -107,16 +107,23 @@ var BanHammerPlugin = function(app, config, io, client) {
         }
 
         if (spamBank[data.attrs.from].length > messageLimit) {
+
+          io.sockets.in(config.room).emit('sk3lls:spammer', {
+            from: data.attrs.from
+          });
+
           var nick = data.attrs.from.split('/')[1];
 
           if (!spamWarn[data.attrs.from]) {
             // hasn't been warned
-            client.sendGroupchat('@' + nick + ': Please don\'t spam the channel, thanks! :)');
+            var message = '@' + nick + ': Please don\'t spam the channel, thanks! :)';
+            client.sendGroupchat(message);
             spamWarn[data.attrs.from] = {
               time: Math.floor(Date.now() / 1000) + warnDurationSeconds,
               count: 0
             };
             spamBank[data.attrs.from] = [ Math.floor(Date.now() / 1000) + rateSeconds];
+            popupDeath(message);
 
           } else {
             // has been warned
@@ -136,6 +143,7 @@ var BanHammerPlugin = function(app, config, io, client) {
             setTimeout(function() {
               kick(data.attrs.from.split('/')[1], 'spamming');
             }, 3000);
+            popupDeath(message);
           }
         }
         console.log('spam: ' + data.attrs.from + ' => ' + spamBank[data.attrs.from].length);
@@ -144,6 +152,15 @@ var BanHammerPlugin = function(app, config, io, client) {
     }
 
   });
+
+  var popupDeath = function(message) {
+    // send the popout command to the view
+    io.sockets.in(config.room).emit('sk3lls:popout', {
+      image: './images/death.png',
+      message: message,
+      offset: { x: '200px', y: '300px' }
+    });
+  };
 
   var handleMessage = function(data) {
 
