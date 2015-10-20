@@ -12,7 +12,7 @@ module.exports = function(config) {
   client.connection.socket.setKeepAlive(true, 10000);
 
   client.on('stanza', function(data) {
-    //console.log(JSON.stringify(data, null, 2));
+    console.log(JSON.stringify(data, null, 2));
   });
 
   client.on('error', function(data) {

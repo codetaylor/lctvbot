@@ -66,12 +66,17 @@ var ClientViewPlugin = function(app, config, io, client) {
     var body = data.getChildText('body');
     var isSelf = data.attrs.from == config.room + '/' + config.nick;
 
+    if (body.indexOf('*bot*') === 0) {
+      return;
+    }
 
     if (isSelf && body.indexOf('!') === 0) {
       // if the message is from an op and command
 
 
-    } else if (body.indexOf('!') === 0) { // is general user
+    }
+
+    if (body.indexOf('!') === 0) { // is general user
 
       var filename = require('path').join(app.get('configPath'), 'popout.json');
       var popoutCommands = JSON.parse(require('fs').readFileSync(filename));
