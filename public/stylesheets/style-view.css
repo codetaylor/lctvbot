@@ -1,0 +1,128 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+body::-webkit-scrollbar { 
+    width: 0 !important;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+}
+
+ul li {
+    overflow: hidden;
+    max-height: 0px;
+    display: block;
+    position: relative;
+    right: -400px;
+    opacity: 0;
+    width: 600px;
+    margin: 4px;
+}
+
+ul li div.text-container {
+    float: left;
+    margin-left: 20px;
+    width: calc(600px - 96px);
+    position: relative;
+}
+
+ul li div.text-container:after {
+    content: "";
+    border-width: 20px 20px 20px 0;
+    border-style: solid;
+    border-color: transparent #024E68;
+    position: absolute;
+    left: -20px;
+    top: 26px;
+    display: block;
+}
+
+ul li .icon {
+    float: left;
+    display: block;
+    width: 64px;
+    height: 64px;
+    -webkit-border-radius: 32px;
+    padding-right; 16px;
+}
+
+ul li user {
+    display: block;
+    background-color: #3AAACF;
+    padding: 4px;
+    padding-left: 8px;
+    height: 18px;
+    line-height: 18px;
+}
+
+ul li message {
+    display: block;
+    background-color: #024E68;
+    padding: 8px;
+    font-size: 1.5em;
+}
+
+ul li.op user {
+    background-color: #FF8300;
+}
+
+ul li.op div.text-container:after {
+    border-color: transparent #A65500;
+}
+
+ul li.op message {
+    background-color: #A65500;
+}
+
+ul li.joined div.text-container:after {
+    display: none;
+}
+
+ul li.joined user {
+    background-color: #00BB3F;
+    color: #007929;
+}
+
+ul li.joined message {
+    background-color: #007929;
+    color: #37DD6F;
+}
+
+ul li.left div.text-container:after {
+    display: none;
+}
+
+ul li.left user {
+    background-color: #666;
+    color: #333;
+}
+
+ul li.left message {
+    background-color: #333;
+    color: #666;
+}
+
+.position {
+    position: absolute;
+    top: calc(100vh - 92px);
+    left: calc(100vw - 635px);
+    width: 4px;
+    height: 4px;
+}
+
+.grower {
+    position: absolute;
+    margin: 0;
+    bottom: 0;
+}
+
+.clearfix {
+    clear: both;
+}
+

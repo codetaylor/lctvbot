@@ -1,0 +1,10 @@
+{
+  "connection" : {
+    "jid":        "< nick@livecoding.tv >",
+    "password":   "yourpasswordright",
+    "transport":  "websocket",
+    "wsURL":      "wss://www.livecoding.tv/chat/websocket"
+  },
+  "room" : "< roomname >",
+  "nick" : "< roomnick >"
+}

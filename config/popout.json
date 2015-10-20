@@ -1,0 +1,99 @@
+{
+  "!bender" : {
+    "image" : "/images/bender.png",
+    "message" : "Bite my shiny, metal ass!",
+    "bubble_position" : {
+      "x" : "220px",
+      "y" : "330px"
+    }
+  },
+  "!leela" : {
+    "image" : "/images/leela.png",
+    "message" : "OK, if everyone's finished being stupid.",
+    "bubble_position" : {
+      "x" : "180px",
+      "y" : "330px"
+    }
+  },
+  "!fry" : {
+    "image" : "/images/fry.png",
+    "message" : "People said I was dumb, but I proved them.",
+    "bubble_position" : {
+      "x" : "180px",
+      "y" : "330px"
+    }
+  },
+  "!farnsworth" : {
+    "image" : "/images/farnsworth.png",
+    "message" : "Good news, everyone!",
+    "bubble_position" : {
+      "x" : "180px",
+      "y" : "330px"
+    }
+  },
+
+  "!consuela" : {
+    "image" : "/images/consuela.png",
+    "message" : "Nooo...",
+    "bubble_position" : {
+      "y" : "350px"
+    }
+  },
+  "!brian" : {
+    "image" : "/images/brian.png",
+    "message" : "It's peanut butter jelly time!",
+    "bubble_position" : {
+      "y" : "400px"
+    }
+  },
+  "!evilmonkey" : {
+    "image" : "/images/evilmonkey.png",
+    "bubble_position" : {
+      "y" : "400px"
+    }
+  },
+
+  "!heman" : {
+    "image" : "/images/heman.png",
+    "message" : "By the power of greyskull!",
+    "bubble_position" : {
+      "y" : "230px"
+    }
+  },
+
+  "!gadget" : {
+    "image" : "/images/gadget.png",
+    "message" : "Wowsers!",
+    "bubble_position" : {
+      "x" : "230px",
+      "y" : "270px"
+    }
+  },
+
+  "!blanka" : {
+    "image" : "/images/blanka.png",
+    "message" : "The jungle taught me secrets you will never know!",
+    "bubble_position" : {
+      "x" : "250px"
+    }
+  },
+  "!zangief" : {
+    "image" : "/images/zangief.png",
+    "message" : "My strength is much greater than yours.",
+    "bubble_position" : {
+      "x" : "250px",
+      "y" : "300px"
+    }
+  },
+  "!mbison" : {
+    "image" : "/images/mbison.png",
+    "message" : "You're no match for my Psycho Power!"
+  },
+  "!dhalsim" : {
+    "image" : "/images/dhalsim.png",
+    "message" : "Your mind is full of wrong ideas. It's best you empty it.",
+    "bubble_position" : {
+      "x" : "250px"
+    }
+  }
+}
