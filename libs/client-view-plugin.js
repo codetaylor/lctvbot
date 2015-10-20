@@ -133,7 +133,7 @@ var ClientViewPlugin = function(app, config, io, client) {
     var isSelf = data.attrs.from == config.room + '/' + config.nick;
 
     if (data.attrs.type == 'unavailable') {
-      console.log('unavailable');
+      console.log(data.attrs.from + ' unavailable');
       getUserImage(data.attrs.from.split('/')[1], function(image_url) {
         io.sockets.in(config.room).emit('unavailable', {
           from: data.attrs.from,
@@ -146,7 +146,7 @@ var ClientViewPlugin = function(app, config, io, client) {
       });
 
     } else {
-      console.log('available');
+      console.log(data.attrs.from + ' available');
       getUserImage(data.attrs.from.split('/')[1], function(image_url) {
         io.sockets.in(config.room).emit('available', {
           from: data.attrs.from,

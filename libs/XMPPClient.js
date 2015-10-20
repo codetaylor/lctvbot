@@ -12,7 +12,7 @@ module.exports = function(config) {
   client.connection.socket.setKeepAlive(true, 10000);
 
   client.on('stanza', function(data) {
-    console.log(JSON.stringify(data, null, 2));
+    //console.log(JSON.stringify(data, null, 2));
   });
 
   client.on('error', function(data) {
@@ -40,7 +40,7 @@ module.exports = function(config) {
   };
 
   client.sendChat = function(to, message) {
-    client.send(new XMPP.Stanza('message', { to: config.room + '/' + to, type: 'groupchat' })
+    client.send(new XMPP.Stanza('message', { to: config.session.domain + '/' + to, type: 'groupchat' })
       .c('body').t(message)
     );
   };

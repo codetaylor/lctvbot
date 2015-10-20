@@ -1,5 +1,9 @@
 Missing images; cause, you know, copyright.
 
+I don't plan on maintaining this or providing support - I just don't have the time.
+
+If you want to maintain this or clean it up or whatever, fork it. Just give me some credit, k? Thanks. :)
+
 ## Features
 
   * overlay images and text

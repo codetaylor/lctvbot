@@ -280,7 +280,12 @@ var BanHammerPlugin = function(app, config, io, client) {
 
       var split = message.split(' ');
       var nick = split[1];
+      var from = nick;
+      if (from.indexOf('@') === -1) {
+        from = config.room + '/' + nick;
+      }
       unban(nick);
+      console.log('Ban manually lifted from ' + from);
 
     }
 
@@ -319,7 +324,6 @@ var BanHammerPlugin = function(app, config, io, client) {
     }
 
     delete banBank[from];
-    console.log('Ban manually lifted from ' + from);
 
     var stanza = new xmpp.Stanza('iq', {
       from: config.session.local + '@' + config.session.domain + '/' + config.session.resource,
@@ -331,6 +335,8 @@ var BanHammerPlugin = function(app, config, io, client) {
     .c('item', { affiliation: 'none', jid: nick + '@' + config.session.domain });
 
     //console.log(JSON.stringify(stanza.root(), null, 2));
+
+    client.sendChat(nick, 'Your ban has been lifted from ' + config.room + ', you may come back.');
 
     client.send(stanza);
 

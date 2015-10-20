@@ -28,10 +28,11 @@ var client = require('./libs/XMPPClient')(config);
 app.set('client', client);
 
 // libs
-app.set('client-view-plugin', require('./libs/client-view-plugin'));
-app.set('ban-hammer-plugin', require('./libs/ban-hammer-plugin'));
-app.get('client-view-plugin')(app, config, io, client);
-app.get('ban-hammer-plugin')(app, config, io, client);
+require('./libs/client-view-plugin')(app, config, io, client);
+require('./libs/ban-hammer-plugin')(app, config, io, client);
+require('./libs/rules-plugin')(app, config, io, client);
+require('./libs/welcome-plugin')(app, config, io, client);
+require('./libs/commands-plugin')(app, config, io, client);
 
 // controllers
 require('./controllers/view')(app);
