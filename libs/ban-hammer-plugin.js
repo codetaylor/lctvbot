@@ -215,14 +215,16 @@ var BanHammerPlugin = function(app, config, io, client) {
 
   var popupDeath = function(message) {
     // send the popout command to the view
-    if (message.indexOf('*bot* ') === 0) {
-      message = message.substring(6);
+    if (message) {
+      if (message.indexOf('*bot* ') === 0) {
+        message = message.substring(6);
+      }
+      io.sockets.in(config.room).emit('sk3lls:popout', {
+        image: './images/death.png',
+        message: message,
+        offset: { x: '200px', y: '300px' }
+      });
     }
-    io.sockets.in(config.room).emit('sk3lls:popout', {
-      image: './images/death.png',
-      message: message,
-      offset: { x: '200px', y: '300px' }
-    });
   };
 
   var handleMessage = function(data) {
@@ -250,7 +252,7 @@ var BanHammerPlugin = function(app, config, io, client) {
 
       var split = message.split(' ');
       var nick = split[1];
-      var duration = 24 * 60 * 60;
+      var duration = '*';
       if (split.length > 2) {
         if (!isNaN(split[2])) {
           duration = +split[2] * 60;          
@@ -268,7 +270,12 @@ var BanHammerPlugin = function(app, config, io, client) {
       }
 
       // assemble the reason, starting with default reason
-      var reason = '@' + nick + ': Please wait ' + toHHMMSS(duration) +' before returning.';
+      var reason;
+      if (isNaN(duration)) {
+        '@' + nick + ': You have been permanently banned.';
+      } else {
+        '@' + nick + ': Please wait ' + toHHMMSS(duration) +' before returning.';
+      }
       if (split.length > 3) {
         reason = split.slice(3).join(' ');
       }
@@ -344,11 +351,15 @@ var BanHammerPlugin = function(app, config, io, client) {
 
   var ban = function(from, nick, duration, message) {
 
-    banBank[from] = {
-      time: getTimestamp() + duration,
-      duration: duration
-    };
-    console.log('Banned ' + from + ' for ' + toHHMMSS(duration));
+    if (!isNaN(duration)) {
+      banBank[from] = {
+        time: getTimestamp() + duration,
+        duration: duration
+      };
+      console.log('Banned ' + from + ' for ' + toHHMMSS(duration));
+    } else {
+      console.log('Banned ' + from + ' permanently');
+    }
     setTimeout(function() {
       kick(from.split('/')[1], message);
     }, 3000);

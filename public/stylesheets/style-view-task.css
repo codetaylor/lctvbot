@@ -1,0 +1,31 @@
+div.task {
+    position: absolute;
+    width: 1200px;
+}
+
+div.task img {
+    position: absolute;
+}
+
+div.task .text-container {
+    background-color: #000;
+    color: #fff;
+    padding: 12px;
+    position: absolute;
+    top: 16px;
+    left: 96px;
+    max-width: 1200px;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+div.task .text-container:after {
+    content: "";
+    display: block;
+    border-style: solid;
+    border-width: 16px 20px 0px 0;
+    border-color: transparent #000;
+    position: absolute;
+    left: -20px;
+    top: 8px;
+}

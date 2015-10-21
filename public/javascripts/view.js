@@ -26,6 +26,24 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  socket.on('sk3lls:task_set', function(data) {
+    //console.log('task_set');
+    //console.log(data);
+    var element = $('.task')[0];
+    var tl = new TimelineLite();
+    tl.to(element, 0.5, { top: "-400px", onComplete: function() { $('.task .text-container').text('Current task: ' + data.task); } });
+    tl.to(element, 0.5, { top: "0px" });
+    tl.play();
+  });
+  socket.on('sk3lls:task_clear', function(data) {
+    //console.log('task_clear');
+    //console.log(data);
+    var element = $('.task')[0];
+    var tl = new TimelineLite();
+    tl.to(element, 0.5, { top: "-400px", onComplete: function() { $('.task .text-container').text('Current task: - idle -'); } });
+    tl.to(element, 0.5, { top: "0px" });
+    tl.play();
+  });
   socket.on('sk3lls:spammer', function(data) {
     console.log('Spammer: ' + JSON.stringify(data, null, 1));
     var nick = data.from.split('/')[1];

@@ -24,15 +24,20 @@ app.set('config', config);
 app.set('view engine', 'jade');
 
 // setup xmpp
-var client = require('./libs/XMPPClient')(config);
+var client = require('./libs/XMPPClient')(config, function() {
+  setTimeout(function() {
+    // libs
+    require('./libs/client-view-plugin')(app, config, io, client);
+    require('./libs/ban-hammer-plugin')(app, config, io, client);
+    require('./libs/rules-plugin')(app, config, io, client);
+    require('./libs/welcome-plugin')(app, config, io, client);
+    require('./libs/commands-plugin')(app, config, io, client);
+    require('./libs/task-plugin')(app, config, io, client);
+    console.log('Plugins loaded');
+    client.sendGroupchat('*bot* online');
+  }, 5000);
+});
 app.set('client', client);
-
-// libs
-require('./libs/client-view-plugin')(app, config, io, client);
-require('./libs/ban-hammer-plugin')(app, config, io, client);
-require('./libs/rules-plugin')(app, config, io, client);
-require('./libs/welcome-plugin')(app, config, io, client);
-require('./libs/commands-plugin')(app, config, io, client);
 
 // controllers
 require('./controllers/view')(app);

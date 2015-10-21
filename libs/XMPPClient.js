@@ -1,4 +1,4 @@
-module.exports = function(config) {
+module.exports = function(config, postOnlineCallback) {
 
   var XMPP = require('node-xmpp-client');
   var client = new XMPP.Client({
@@ -30,6 +30,10 @@ module.exports = function(config) {
     client.send(new XMPP.Stanza('presence', { to: config.room + '/' + config.nick })
       .c('x', { xmlns: 'http://jabber.org/protocol/muc' })
     );
+
+    if (postOnlineCallback) {
+      postOnlineCallback();
+    }
 
   });
 
