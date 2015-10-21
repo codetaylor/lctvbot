@@ -6,6 +6,8 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
 
 ## Features
 
+  * control view
+  * focus timer
   * overlay images and text
   * overlay chat
   * message repeat protection with escalating ban duration
