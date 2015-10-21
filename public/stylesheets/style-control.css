@@ -1,8 +1,83 @@
 body {
   margin: 0px;
-  padding: 0px;
+  padding: 16px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #333333;
   color: #FFF;
   height: 100%;
 }
+
+#wrapper ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper ul li {
+    display: inline-block;
+    background-color: #000;
+    padding: 8px;
+    margin: 8px;
+}
+
+#wrapper ul li h1 {
+    margin: 0;
+    margin-left: 8px;
+    margin-top: 16px;
+    color: #3AAACF;
+}
+
+.button {
+    width: 300px;
+    height: 64px;
+    background-color: #024E68;
+    color: #3AAACF;
+    margin: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 18px;
+    font-family: sans-serif;
+    text-align: center;
+    line-height: 3.75em;
+}
+
+.button:hover {
+    background-color: #3AAACF;
+    color: #fff;
+}
+
+#focus {
+    position: relative;
+}
+
+#focus-start {
+    width: 228px;
+}
+
+#focus .minutes {
+    position: absolute;
+    top: 64px;
+    left: 250px;
+    display: block;
+    height: 64px;
+}
+
+#task input[type="text"] {
+    display: block;
+    margin: 8px;
+    width: 270px;
+    appearance: none;
+    box-shadow: none;
+    border-radius: none;
+    font-family: sans-serif;
+    font-size: 18px;
+    padding: 10px;
+    border: 5px solid #024E68;
+    transition: border 0.3s;
+}
+
+#task input[type="text"]:focus {
+    outline: none;
+    border: 5px solid #3AAACF;
+}
+

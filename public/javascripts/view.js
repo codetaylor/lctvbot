@@ -59,7 +59,7 @@ $(document).ready(function() {
       if (!element) {
         var html = tmpl('focus_tmpl', {});
         $('.wrapper').prepend(html);
-        setupFocusTimer(data.minutes);
+        setupFocusTimer(data.minutes, 0.5);
         var element = $('.timer-wrapper')[0];
         var tl = new TimelineLite();
         tl.from(element, 0.5, { left: "-400px" });
@@ -159,7 +159,7 @@ $(document).ready(function() {
     }
   });
 
-  var setupFocusTimer = function(minutes) {
+  var setupFocusTimer = function(minutes, volume) {
 
     var seconds = 59;
     //var minutes = 45; // variable
@@ -194,6 +194,7 @@ $(document).ready(function() {
         if (minutes < 0) {
           clearInterval(timerHandle); // stop the countdown
           // start the bell
+          $('.timer-wrapper audio').prop('volume', volume);
           $('.timer-wrapper audio')[0].play();
           buzzerHandle = setInterval(function() {
             $('.timer-wrapper audio')[0].play();

@@ -31,7 +31,7 @@ var FocusPlugin = function(app, config, io, client) {
                 minutes = 1;
               }
               io.sockets.in(config.room).emit('sk3lls:focus', {
-                minutes: +split[1]
+                minutes: minutes
               });
 
             } else {
@@ -46,6 +46,33 @@ var FocusPlugin = function(app, config, io, client) {
       }
     }
   });
+
+  io.on('connection', function(socket) {
+
+    socket.on('control:focus-start', function(data) {
+      //console.log(JSON.stringify(data, null, 1));
+      if (data.minutes) {
+        io.sockets.in(config.room).emit('sk3lls:focus', {
+          minutes: data.minutes
+        });
+
+      } else {
+        io.sockets.in(config.room).emit('sk3lls:focus', {
+          minutes: defaultFocusMinutes
+        });
+
+      }
+    });
+
+    socket.on('control:focus-stop', function(data) {
+      //console.log(JSON.stringify(data, null, 1));
+      io.sockets.in(config.room).emit('sk3lls:focus', {
+        off: true
+      });
+    });
+
+  });
+
 
 };
 

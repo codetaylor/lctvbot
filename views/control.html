@@ -2,47 +2,41 @@
 <html>
 
   <head>
-    <title>andyCAss Control</title>
+    <title>sk3lls control</title>
 
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
-      <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
-      <script src="http://code.jquery.com/jquery-2.1.4.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
-      <script src="/socket.io/socket.io.js"></script>
-      <script src="/javascripts/template.js"></script>
-      <script src="/javascripts/view.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.11/jquery.knob.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/javascripts/template.js"></script>
+    <script src="/javascripts/control.js"></script>
 
-      <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
-      <link rel="stylesheet" type="text/css" href="stylesheets/style-control.css">
-
-    <script type="text/html" id="message_tmpl">
-      <div id="message_<%=message_id%>" class="message <%=type%>">
-      </div>
-    </script>
-
-    <script type="text/html" id="tab_tmpl">
-      <div id="tab:<%=room_jid%>" class="tab"><text><inner><%=text%></inner></text></div>
-    </script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style-control.css">
 
   </head>
 
   <body>
 
     <div id="wrapper">
-      <div id="header">
-        <ul>
-          <li id="button-chat"></li>
-          <li id="button-roster"></li>
-        </ul>
-      </div>
-      <div id="message-frame">
-        <ul class="messages"></ul>
-      </div>  
-      <div id="footer">
-        <input id="input-send" type="text">
-      </div>
+      <ul>
+        <li id="focus">
+          <h1>Focus</h1>
+          <div class="button" id="focus-start">Start</div>
+          <div class="minutes">
+            <input type="text" value="25">
+          </div>
+          <div class="button" id="focus-stop">Stop</div>
+        </li>
+        <li id="task">
+          <h1>Task</h1>
+          <input type="text">
+          <div class="button" id="task-set">Set</div>
+          <div class="button" id="task-clear">Clear</div>
+        </li>
+      </ul>
     </div>
 
   </body>

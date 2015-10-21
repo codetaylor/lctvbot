@@ -36,6 +36,27 @@ var TaskPlugin = function(app, config, io, client) {
     }
   });
 
+  io.on('connection', function(socket) {
+
+    socket.on('control:task-set', function(data) {
+      //console.log(JSON.stringify(data, null, 1));
+      if (data.task) {
+        io.sockets.in(config.room).emit('sk3lls:task_set', {
+          task: data.task
+        });
+
+      } else {
+        io.sockets.in(config.room).emit('sk3lls:task_clear', {});
+
+      }
+    });
+
+    socket.on('control:task-clear', function(data) {
+      //console.log(JSON.stringify(data, null, 1));
+      io.sockets.in(config.room).emit('sk3lls:task_clear', {});
+    });
+
+  });
 };
 
 module.exports = TaskPlugin;
