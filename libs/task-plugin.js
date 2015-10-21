@@ -1,4 +1,4 @@
-var RulesPlugin = function(app, config, io, client) {
+var TaskPlugin = function(app, config, io, client) {
   
   client.on('stanza', function(data) {
 
@@ -38,4 +38,4 @@ var RulesPlugin = function(app, config, io, client) {
 
 };
 
-module.exports = RulesPlugin;
+module.exports = TaskPlugin;

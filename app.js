@@ -33,6 +33,7 @@ var client = require('./libs/XMPPClient')(config, function() {
     require('./libs/welcome-plugin')(app, config, io, client);
     require('./libs/commands-plugin')(app, config, io, client);
     require('./libs/task-plugin')(app, config, io, client);
+    require('./libs/focus-plugin')(app, config, io, client);
     console.log('Plugins loaded');
     client.sendGroupchat('*bot* online');
   }, 5000);

@@ -4,6 +4,8 @@ $(document).ready(function() {
   var queue = [];
   var duration = "+=10.0";
   var popout = false;
+  var timerHandle;
+  var buzzerHandle = 0;
 
   setInterval(function() {
     var data = queue.shift();
@@ -26,51 +28,46 @@ $(document).ready(function() {
     }
   }, 1000);
 
-  // ---------------------------------------------------------
+  socket.on('sk3lls:focus', function(data) {
+    if (data.off) {
+      // turn it off
 
-  var seconds = 59;
-  var minutes = 45;
-
-  $('.timer-seconds input').knob({
-    min: 0,
-    max: 59,
-    displayInput: false,
-    width: 44,
-    fgColor: '#999999',
-    bgColor: '#111111',
-    thickness: 0.175
-  });
-
-  $('.timer-minutes input').knob({
-    min: 0,
-    max: minutes,
-    width: 64,
-    fgColor: '#3AAACF',
-    bgColor: '#024E68',
-    thickness: 0.2
-  });
-
-  var timerId;
-  $('.timer-seconds input').val(seconds);
-  $('.timer-minutes input').val(minutes);
-  timerId = setInterval(function() {
-    --seconds;
-    if (seconds < 0) {
-      seconds = 59;
-      --minutes;
-      if (minutes < 0) {
-        console.log('done');
-        clearInterval(timerId);
-        // todo animate out and destroy
-        return;
+      var element = $('.timer-wrapper')[0];
+      if (element) {
+        if (timerHandle) {
+          clearInterval(timerHandle);
+          timerHandle = 0;
+        }
+        // turn off the buzzer
+        if (buzzerHandle) {
+          clearInterval(buzzerHandle);
+          buzzerHandle = 0;
+        }
+        // slide off screen and destroy
+        var tl = new TimelineLite();
+        tl.to(element, 0.5, { left: "-400px", onComplete: function() { element.remove(); }});
+        tl.play();
       }
-      $('.timer-minutes input').val(minutes).trigger('change');
+
+    } else {
+      // turn it on for data.minutes
+
+      // if not on:
+      // create
+      // slide onto screen
+      var element = $('.timer-wrapper')[0];
+      if (!element) {
+        var html = tmpl('focus_tmpl', {});
+        $('.wrapper').prepend(html);
+        setupFocusTimer(data.minutes);
+        var element = $('.timer-wrapper')[0];
+        var tl = new TimelineLite();
+        tl.from(element, 0.5, { left: "-400px" });
+        tl.play();
+      }
+      
     }
-    $('.timer-seconds input').val(seconds).trigger('change');
-  }, 1000);
-
-  // ---------------------------------------------------------
-
+  });
   socket.on('sk3lls:task_set', function(data) {
     //console.log('task_set');
     //console.log(data);
@@ -161,6 +158,53 @@ $(document).ready(function() {
       t.play();
     }
   });
+
+  var setupFocusTimer = function(minutes) {
+
+    var seconds = 59;
+    //var minutes = 45; // variable
+    minutes -= 1;
+
+    $('.timer-seconds input').knob({
+      min: 0,
+      max: 60,
+      displayInput: false,
+      width: 44,
+      fgColor: '#007929',
+      bgColor: '#111111',
+      thickness: 0.175
+    });
+
+    $('.timer-minutes input').knob({
+      min: 0,
+      max: minutes,
+      width: 64,
+      fgColor: '#3AAACF',
+      bgColor: '#024E68',
+      thickness: 0.2
+    });
+
+    $('.timer-seconds input').val(seconds);
+    $('.timer-minutes input').val(minutes);
+    timerHandle = setInterval(function() {
+      --seconds;
+      if (seconds < 0) {
+        seconds = 59;
+        --minutes;
+        if (minutes < 0) {
+          clearInterval(timerHandle); // stop the countdown
+          // start the bell
+          $('.timer-wrapper audio')[0].play();
+          buzzerHandle = setInterval(function() {
+            $('.timer-wrapper audio')[0].play();
+          }, 10000);
+          return;
+        }
+        $('.timer-minutes input').val(minutes).trigger('change');
+      }
+      $('.timer-seconds input').val(seconds).trigger('change');
+    }, 1000);
+  }
 
   var getId = function(to_split) {
     var from_split = to_split.split('/');

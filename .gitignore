@@ -29,6 +29,7 @@ node_modules
 
 notes/
 public/images/
+public/audio/
 config/connection.json
 config/xmpp-sk3lls.json
 config/acl.json
