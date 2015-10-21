@@ -5,15 +5,16 @@ div.task {
 
 div.task img {
     position: absolute;
+    margin-left: 16px;
 }
 
 div.task .text-container {
-    background-color: #000;
+    background-color: #111;
     color: #fff;
     padding: 12px;
     position: absolute;
     top: 16px;
-    left: 96px;
+    left: 104px;
     max-width: 1200px;
     border-radius: 8px;
     font-size: 20px;
@@ -23,9 +24,9 @@ div.task .text-container:after {
     content: "";
     display: block;
     border-style: solid;
-    border-width: 16px 20px 0px 0;
-    border-color: transparent #000;
+    border-width: 14px 16px 0px 0;
+    border-color: transparent #111;
     position: absolute;
-    left: -20px;
-    top: 8px;
+    left: -16px;
+    top: 14px;
 }

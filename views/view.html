@@ -8,6 +8,7 @@
       <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
       <script src="http://code.jquery.com/jquery-2.1.4.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.11/jquery.knob.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script src="/javascripts/template.js"></script>
@@ -17,6 +18,7 @@
       <link rel="stylesheet" type="text/css" href="stylesheets/style-view.css">
       <link rel="stylesheet" type="text/css" href="stylesheets/style-view-popout.css">
       <link rel="stylesheet" type="text/css" href="stylesheets/style-view-task.css">
+      <link rel="stylesheet" type="text/css" href="stylesheets/style-view-timer.css">
 
       <script type="text/html" id="message_popup_tmpl">
         <li id="message_<%=id%>" class="message <%=style%>">
@@ -42,9 +44,23 @@
 
   <body>
     <div class="wrapper">
+
+      <div class="timer-wrapper">
+        <div class="timer-seconds">
+          <input type="text" value="59">
+        </div>
+        <div class="timer-minutes">
+          <input type="text" value="59">
+        </div>
+        <div class="text-container">
+          <h1>Focus Time</h1>
+          <p>I will be re-joining chat soon!</p>
+        </div>
+      </div>
+      
       <div class="task">
         <img src="/images/smisle.png" />
-        <div class="text-container">Placeholder task test text.</div>
+        <div class="text-container">&nbsp;-&nbsp;idle&nbsp;-&nbsp;</div>
       </div>
       <div class="position">
         <div class="grower">

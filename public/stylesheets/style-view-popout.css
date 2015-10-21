@@ -1,6 +1,6 @@
 .popout {
     position: absolute;
-    top: calc(100% - 700px);
+    bottom: 128px;
     width: 300px;
 }
 

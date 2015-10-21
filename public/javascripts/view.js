@@ -26,6 +26,51 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  // ---------------------------------------------------------
+
+  var seconds = 59;
+  var minutes = 45;
+
+  $('.timer-seconds input').knob({
+    min: 0,
+    max: 59,
+    displayInput: false,
+    width: 44,
+    fgColor: '#999999',
+    bgColor: '#111111',
+    thickness: 0.175
+  });
+
+  $('.timer-minutes input').knob({
+    min: 0,
+    max: minutes,
+    width: 64,
+    fgColor: '#3AAACF',
+    bgColor: '#024E68',
+    thickness: 0.2
+  });
+
+  var timerId;
+  $('.timer-seconds input').val(seconds);
+  $('.timer-minutes input').val(minutes);
+  timerId = setInterval(function() {
+    --seconds;
+    if (seconds < 0) {
+      seconds = 59;
+      --minutes;
+      if (minutes < 0) {
+        console.log('done');
+        clearInterval(timerId);
+        // todo animate out and destroy
+        return;
+      }
+      $('.timer-minutes input').val(minutes).trigger('change');
+    }
+    $('.timer-seconds input').val(seconds).trigger('change');
+  }, 1000);
+
+  // ---------------------------------------------------------
+
   socket.on('sk3lls:task_set', function(data) {
     //console.log('task_set');
     //console.log(data);

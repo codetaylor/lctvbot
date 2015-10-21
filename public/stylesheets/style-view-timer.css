@@ -1,0 +1,48 @@
+.timer-minutes {
+    position: absolute;
+}
+
+.timer-seconds {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+}
+
+.timer-wrapper {
+    position: absolute;
+    background-color: #111;
+    width: 375px;
+    height: 64px;
+    padding: 4px;
+    border-radius: 128px;
+    border: 4px solid #999;
+    bottom: 56px;
+    left: 16px;
+}
+
+.timer-wrapper input {
+    font-size: 26px !important;
+    height: 32px !important;
+    width: 32px !important;
+    margin-top: 16px !important;
+    margin-left: -48px !important;
+}
+
+.timer-wrapper .text-container {
+    padding-left: 80px;
+    margin: 0px;
+    color: #666;
+}
+
+.timer-wrapper .text-container h1 {
+    margin: 0px;
+    margin-top: 5px;
+    color: #999;
+}
+
+.timer-wrapper .text-container p {
+    margin: 0px;
+    font-weight: bold;
+    font-size: 18px;
+}
+

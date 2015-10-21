@@ -18,7 +18,6 @@ var RulesPlugin = function(app, config, io, client) {
             var split = message.split(' ');
             if (split[1] == 'set') {
 
-              
               split.shift();
               split.shift();
               var task = split.join(' ');
