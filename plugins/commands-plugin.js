@@ -1,4 +1,4 @@
-var RulesPlugin = function(app, config, io, client) {
+var CommandsPlugin = function(app, config, io, client) {
   
   var cooldown = false;
 
@@ -14,7 +14,7 @@ var RulesPlugin = function(app, config, io, client) {
         var message = data.getChildText('body');
         if (message.indexOf('!commands') === 0) {
           if (cooldown) {
-            client.sendGroupchat('*bot* The !commands command is on cooldown for 5 seconds, please be patient.');
+            client.sendGroupchat('The !commands command is on cooldown for 5 seconds, please be patient.');
           } else {
             cooldown = true;
 
@@ -25,7 +25,7 @@ var RulesPlugin = function(app, config, io, client) {
             for (command in popoutCommands) {
               list.push(command);
             }
-            client.sendGroupchat('*bot* Popout commands: ' + list.join(', '));
+            client.sendGroupchat('Popout commands: ' + list.join(', '));
 
             setTimeout(function() {
               cooldown = false;
@@ -41,4 +41,4 @@ var RulesPlugin = function(app, config, io, client) {
 
 };
 
-module.exports = RulesPlugin;
+module.exports = CommandsPlugin;

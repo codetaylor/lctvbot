@@ -5,6 +5,23 @@
     "transport":  "websocket",
     "wsURL":      "wss://www.livecoding.tv/chat/websocket"
   },
+  "proxy" : {
+    "nick" :      "< proxynick >",
+    "jid":        "< proxynick@livecoding.tv >",
+    "password":   "yourpasswordright",
+    "transport":  "websocket",
+    "wsURL":      "wss://www.livecoding.tv/chat/websocket"
+  },
+  "obsRemote" : {
+    "host" : "< ip >",
+    "password" : "< password >"
+  },
   "room" : "< roomname >",
-  "nick" : "< roomnick >"
+  "nick" : "< roomnick >",
+  "followerFeedURL" : "< yourfeedurl >",
+  "operators" : [
+    "< operator #1 >",
+    "< operator #2 >",
+    "< etc... >"
+  ]
 }

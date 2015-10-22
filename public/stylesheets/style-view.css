@@ -12,10 +12,10 @@ body::-webkit-scrollbar {
 ul {
     list-style: none;
     margin: 0;
+    padding: 0;
 }
 
 ul li {
-    overflow: hidden;
     max-height: 0px;
     display: block;
     position: relative;
@@ -48,7 +48,7 @@ ul li .icon {
     display: block;
     width: 64px;
     height: 64px;
-    -webkit-border-radius: 32px;
+    -webkit-border-radius: 64px;
     padding-right; 16px;
 }
 
@@ -108,10 +108,40 @@ ul li.left message {
     color: #666;
 }
 
+ul li.follower:before {
+    content: "";
+    display: block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    background-color: #024E68;
+    top: 30px;
+    left: -18px;
+    border-radius: 45px;
+    border: 2px solid #3AAACF;
+}
+
+ul li img.icon-follower {
+    position: absolute;
+    left: -30px;
+    top: 26px;
+}
+
+ul li img.themite {
+    content: url("http://192.168.1.73:3000/images/forum-badge-themis.png");
+    width: 128px;
+    height: 25px;
+    float: right;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -3px;
+}
+
 .position {
     position: absolute;
-    top: calc(100vh - 92px);
-    left: calc(100vw - 635px);
+    bottom: 128px;
+    right: 600px;
     width: 4px;
     height: 4px;
 }

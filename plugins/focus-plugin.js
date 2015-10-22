@@ -1,5 +1,6 @@
 var FocusPlugin = function(app, config, io, client) {
-  
+
+  var Util = require('../libs/Util')  ;
   var defaultFocusMinutes = 25;
 
   client.on('stanza', function(data) {
@@ -11,11 +12,16 @@ var FocusPlugin = function(app, config, io, client) {
 
       } else {
 
-        if (data.attrs.from == config.room + '/' + config.nick) {
+        var nick = Util.getNickFrom(data.attrs.from);
+
+        // operator only
+        if (Util.isOperator(nick, config)) {
 
           // we sent this message
           var message = data.getChildText('body');
           if (message.indexOf('!focus') === 0) {
+
+            // usage: !focus [<'off'|minutes>]
 
             var split = message.split(' ');
             if (split.length === 2 && split[1] == 'off') {

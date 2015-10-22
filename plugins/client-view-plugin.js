@@ -1,7 +1,8 @@
 var ClientViewPlugin = function(app, config, io, client) {
 
-  // holds user image filenames in memory
-  var image_cache = {};
+  var Util = require('../libs/Util');
+  var UserImage = require('../libs/UserImage');
+  var storage = require('node-persist');
 
   // pipes the room joins/leaves and messages to io
 
@@ -16,9 +17,27 @@ var ClientViewPlugin = function(app, config, io, client) {
       if (data.getChild('delay')) {
         // this is most likely room history
 
+      } else if (data.getChild('show')) {
+        // presence is a status change
+
       } else if (data.attrs.from == data.attrs.to) {
         // this is our own initial presence
 
+      } else if (data.getChild('show')) {
+        // children: away, chat, xa (not available), dnd (do not disturb)
+        var show = data.getChild('show');
+        if (show.getChild('away')) {
+          client.sendGroupchat(nick + ' is now away');
+
+        } else if (show.getChild('chat')) {
+          client.sendGroupchat(nick + ' is now available for chat');
+
+        } else if (show.getChild('xa')) {
+          client.sendGroupchat(nick + ' is no longer available');
+
+        } else if (show.getChild('dnd')) {
+          client.sendGroupchat('Do not disturb ' + nick);
+        }
       } else {
         // check if the presence is from ourself
         var split = data.from.split('/');
@@ -42,10 +61,9 @@ var ClientViewPlugin = function(app, config, io, client) {
       if (data.getChild('delay')) {
         // this is most likely room history
 
-      } else if (data.attrs.from == config.room + '/' + config.nick) {
-        // we sent this message
+      } else if (Util.getNickFrom(data.attrs.from) == config.proxy.nick) {
+        // this is a proxy message, don't display it
         //console.log(JSON.stringify(data, null, 2));
-        handleMessage(data);
 
       } else {
         // someone else sent this message
@@ -64,19 +82,9 @@ var ClientViewPlugin = function(app, config, io, client) {
     // console.log(data);
 
     var body = data.getChildText('body');
-    var isSelf = data.attrs.from == config.room + '/' + config.nick;
+    var nick = Util.getNickFrom(data.attrs.from);
 
-    if (body.indexOf('*bot*') === 0) {
-      return;
-    }
-
-    if (isSelf && body.indexOf('!') === 0) {
-      // if the message is from an op and command
-
-
-    }
-
-    if (body.indexOf('!') === 0) { // is general user
+    if (body.indexOf('!') === 0) { // is command
 
       var filename = require('path').join(app.get('configPath'), 'popout.json');
       var popoutCommands = JSON.parse(require('fs').readFileSync(filename));
@@ -87,6 +95,14 @@ var ClientViewPlugin = function(app, config, io, client) {
         if (popoutCommands.hasOwnProperty(k)) {
 
           if (body.indexOf(k) === 0) {
+
+            var user = storage.getItem('users')[data.attrs.from];
+            if (!user.isFollower && !Util.isOperator(nick, config)) {
+              // reserved for ops and followers
+              client.sendGroupchat('@' + nick + ': Follow and get access to this command!');
+              return;
+            }
+
             var message = popoutCommands[k].message;
             
             if (message) {
@@ -113,15 +129,16 @@ var ClientViewPlugin = function(app, config, io, client) {
       }
 
     } else if (body.indexOf('!') !== 0) { // is not ! command
-      // get the user's image, send the message command to the view
-      getUserImage(data.attrs.from.split('/')[1], function (image_url) {
+      // get the user's image, send the message to the view
+      UserImage.get(nick, function (image_url) {
         io.sockets.in(config.room).emit('message', {
           from: data.attrs.from,
           to: data.attrs.to,
-          op: isSelf,
+          op: Util.isOperator(nick, config),
           type: data.attrs.type,
           body: body,
-          image_url: image_url
+          image_url: image_url,
+          user: storage.getItem('users')[data.attrs.from]
         });
       });
     }
@@ -129,57 +146,39 @@ var ClientViewPlugin = function(app, config, io, client) {
 
   var handlePresence = function(data) {
 
+    var nick = Util.getNickFrom(data.attrs.from);
     var body = data.getChildText('body');
     var isSelf = data.attrs.from == config.room + '/' + config.nick;
 
     if (data.attrs.type == 'unavailable') {
       console.log(data.attrs.from + ' unavailable');
-      getUserImage(data.attrs.from.split('/')[1], function(image_url) {
+      UserImage.get(nick, function(image_url) {
         io.sockets.in(config.room).emit('unavailable', {
           from: data.attrs.from,
           to: data.attrs.to,
           op: isSelf,
           type: data.attrs.type,
           body: body,
-          image_url: image_url
+          image_url: image_url,
+          user: storage.getItem('users')[data.attrs.from]
         });
       });
 
     } else {
       console.log(data.attrs.from + ' available');
-      getUserImage(data.attrs.from.split('/')[1], function(image_url) {
+      UserImage.get(nick, function(image_url) {
         io.sockets.in(config.room).emit('available', {
           from: data.attrs.from,
           to: data.attrs.to,
           op: isSelf,
           type: data.attrs.type,
           body: body,
-          image_url: image_url
+          image_url: image_url,
+          user: storage.getItem('users')[data.attrs.from]
         });
       });
 
     }
-  };
-
-  var getUserImage = function(username, callback) {
-    if (image_cache[username]) {
-      if (callback) {
-        callback(image_cache[username]);
-      }
-      return;
-    }
-    var request = require('request');
-    var cheerio = require('cheerio');
-    var url = 'https://www.livecoding.tv/' + username;
-    request(url, function(err, resp, body) {
-      $ = cheerio.load(body);
-      var src = $('div.stream-title--image img').attr('src');
-      url = 'https://www.livecoding.tv' + src;
-      image_cache[username] = url;
-      if (callback) {
-        callback(url);
-      }
-    });
   };
   
 };

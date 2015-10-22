@@ -1,9 +1,10 @@
 var BanHammerPlugin = function(app, config, io, client) {
 
   var xmpp = require('node-xmpp-client');
+  var Util = require('../libs/Util');
 
-  var rateSeconds = 30;
-  var messageLimit = 20;
+  var rateSeconds = 15;
+  var messageLimit = 10;
   var warnDurationSeconds = 60 * 10;
   var banDurationSeconds = 60;
   var maxRepeats = 3;
@@ -25,6 +26,11 @@ var BanHammerPlugin = function(app, config, io, client) {
 
   // keeps track of last X things someone said
   var repeatBank = {};
+  setInterval(function() {
+    // TODO clean up the tail of this collection every N seonds.
+    // right now it will trigger when someone types say !view three times
+    // in a very long session
+  });
 
   var spamWarn = {};
   setInterval(function() {
@@ -90,13 +96,15 @@ var BanHammerPlugin = function(app, config, io, client) {
       if (data.getChild('delay')) {
         // this is most likely room history
 
-      } else if (data.attrs.from == config.room + '/' + config.nick) {
-        // we sent this message
-        //console.log(JSON.stringify(data, null, 2));
-        data.who = 'self';
-        handleMessage(data);
-
       } else {
+
+        // check for ops
+        var nick = Util.getNickFrom(data.attrs.from);
+        if (Util.isOperator(nick, config)) {
+          handleCommand(data);
+          return; // bypass the ban hammer for ops
+        }
+
         // if there's a record, add to it, otherwise make a new one
         if (spamBank[data.attrs.from]) {
           spamBank[data.attrs.from].push(getTimestamp() + rateSeconds);
@@ -166,7 +174,6 @@ var BanHammerPlugin = function(app, config, io, client) {
             from: data.attrs.from
           });
 
-          var nick = data.attrs.from.split('/')[1];
           handleSpammer(data.attrs.from, nick, 'Please don\'t spam the channel, thanks! :)', function() {
             // clear the spam counter
             spamBank[data.attrs.from] = [ getTimestamp() + rateSeconds];
@@ -198,7 +205,7 @@ var BanHammerPlugin = function(app, config, io, client) {
       // has been warned
       var warnCount = spamWarn[from].count;
       var duration = banDurationSeconds * (Math.pow(10, warnCount)); // * 1, 10, 100 minutes
-      var message = '*bot* @' + nick + ': You were warned. Please come back when you\'ve calmed down a bit. (' + toHHMMSS(duration) +')';
+      var message = '@' + nick + ': You were warned. Please come back when you\'ve calmed down a bit. (' + toHHMMSS(duration) +')';
       popupDeath(message);
       client.sendGroupchat(message);
       // update the existing warning
@@ -216,9 +223,6 @@ var BanHammerPlugin = function(app, config, io, client) {
   var popupDeath = function(message) {
     // send the popout command to the view
     if (message) {
-      if (message.indexOf('*bot* ') === 0) {
-        message = message.substring(6);
-      }
       io.sockets.in(config.room).emit('sk3lls:popout', {
         image: './images/death.png',
         message: message,
@@ -227,11 +231,13 @@ var BanHammerPlugin = function(app, config, io, client) {
     }
   };
 
-  var handleMessage = function(data) {
+  var handleCommand = function(data) {
 
     var message = data.getChildText('body');
 
     if (message.indexOf('!kick') === 0) {
+
+      // usage: !kick <nick> [<reason>]
 
       var split = message.split(' ');
       var nick = split[1];
@@ -284,6 +290,8 @@ var BanHammerPlugin = function(app, config, io, client) {
       ban(from, nick, duration, reason);
 
     } else if (message.indexOf('!uban') === 0) {
+
+      // usage: !uban <nick>
 
       var split = message.split(' ');
       var nick = split[1];

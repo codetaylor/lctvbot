@@ -13,9 +13,9 @@ $(document).ready(function() {
       var id = getId(data.from);
       var html = tmpl('message_popup_tmpl', {
         id: m_id, 
-        style: data.style + ' ' + data.from.split('/')[1],
+        style: data.style + ' ' + data.user.nick,
         icon: data.image_url, 
-        user: id.user, 
+        user: data.user, 
         message: data.body 
       });
       $('#list').append(html);
@@ -28,6 +28,11 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  socket.on('sk3lls:new_follower', function(data) {
+    console.log(data);
+    // TODO
+
+  });
   socket.on('sk3lls:focus', function(data) {
     if (data.off) {
       // turn it off
@@ -104,22 +109,25 @@ $(document).ready(function() {
     //console.log(data);
     getId(data.from);
     data.style = (data.op) ? 'op' : '';
+    data.style += (data.user.isFollower) ? ' follower' : '';
     if (data.type == 'groupchat') {
       queue.push(data);
     }
   });
   socket.on('available', function(data) {
     //console.log('muc:available: ');
-    //console.log(data);
+    console.log(data);
     data.style = 'joined';
-    data.body = 'joined the channel';
+    data.style += (data.user.isFollower) ? ' follower' : '';
+    data.body = data.user.nick + ' joined the channel';
     queue.push(data);
   });
   socket.on('unavailable', function(data) {
     //console.log('muc:unavailable: ');
-    //console.log(data);
+    console.log(data);
     data.style = 'left';
-    data.body = 'left the channel';
+    data.style += (data.user.isFollower) ? ' follower' : '';
+    data.body = data.user.nick + ' left the channel';
     queue.push(data);
   });
   socket.on('sk3lls:popout', function(data) {

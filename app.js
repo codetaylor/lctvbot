@@ -1,3 +1,5 @@
+var postConnectDelaySeconds = 5;
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -8,6 +10,26 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var io = require('socket.io').listen(server);
 var fs = require('fs');
+
+var plugins = [
+  'client-view-plugin',
+  'ban-hammer-plugin',
+  'follower-plugin',
+  'rules-plugin',
+  'user-plugin',
+  'commands-plugin',
+  'task-plugin',
+  'focus-plugin',
+  'obs-plugin'
+];
+
+var storage = require('node-persist');
+storage.initSync();
+var settings = storage.getItem('settings') || {
+  // default settings
+  greeting: true
+};
+storage.setItem('settings', settings);
 
 app.set('env', 'development');
 app.set('debug', true);
@@ -25,18 +47,23 @@ app.set('view engine', 'jade');
 
 // setup xmpp
 var client = require('./libs/XMPPClient')(config, function() {
+  console.log('Delay loading plugins for ' + postConnectDelaySeconds + ' seconds...');
   setTimeout(function() {
-    // libs
-    require('./libs/client-view-plugin')(app, config, io, client);
-    require('./libs/ban-hammer-plugin')(app, config, io, client);
-    require('./libs/rules-plugin')(app, config, io, client);
-    require('./libs/welcome-plugin')(app, config, io, client);
-    require('./libs/commands-plugin')(app, config, io, client);
-    require('./libs/task-plugin')(app, config, io, client);
-    require('./libs/focus-plugin')(app, config, io, client);
-    console.log('Plugins loaded');
-    client.sendGroupchat('*bot* online');
-  }, 5000);
+
+    var success = 0;
+    for (var i = 0; i < plugins.length; ++i) {
+      try {
+        require('./plugins/' + plugins[i])(app, config, io, client);
+        ++success;
+        console.log('Loaded plugin: ' + plugins[i]);
+      } catch (e) {
+        console.log(e.stack);
+      }
+    }
+
+    console.log('Successfully loaded ' + success + '/' + plugins.length + ' plugins');
+    client.sendGroupchat('- sk3lls v1.0 online -');
+  }, postConnectDelaySeconds * 1000);
 });
 app.set('client', client);
 
@@ -103,12 +130,21 @@ app.splash = function() {
 
 process.stdin.resume();
 
+var cleanup = false;
 app.exitHandler = function(opts, err) {
-  if (opts.cleanup) {
-    client.end();
+  if (!cleanup) {
+    cleanup = true;
+    if (opts.cleanup) {
+      console.log('Cleanup...');
+      client.sendGroupchat(' - offline -');
+      client.end();
+      if (client.proxy) {
+        client.proxy.end();
+      }
+    }
+    if (err) console.log(err.stack);
+    if (opts.exit) process.exit();
   }
-  if (err) console.log(err.stack);
-  if (opts.exit) process.exit();
 };
 
 process.on('exit', app.exitHandler.bind(null, { cleanup:true }));
