@@ -27,8 +27,8 @@ var OBSPlugin = function(app, config, io, client) {
         var message = data.getChildText('body');
         if (message.indexOf('!view') === 0) {
 
-          // donor, founder or operator only
-          if (user.donations || user.founder || Util.isOperator(nick, config)) {
+          // operator only
+          if (Util.isOperator(nick, config)) {
 
             // usage: !view
 
