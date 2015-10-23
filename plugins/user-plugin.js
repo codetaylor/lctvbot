@@ -83,6 +83,14 @@ var UserPlugin = function(app, config, io, client) {
                 user.greeting = true;
               }
               
+              if (!user.hasOwnProperty('founder')) {
+                user.founder = false;
+              }
+              
+              if (!user.hasOwnProperty('donations')) {
+                user.donations = 0;
+              }
+              
               // persist
               storage.setItem('users', users);
 
@@ -94,7 +102,9 @@ var UserPlugin = function(app, config, io, client) {
                 isFollower: followers[nick.toLowerCase()] ? true : false,
                 role: data.getChild('x').getChild('item').attrs.role,
                 affiliation: data.getChild('x').getChild('item').attrs.affiliation,
-                greeting: true
+                greeting: true,
+                founder: false,
+                donations: 0
               };
 
               // persist

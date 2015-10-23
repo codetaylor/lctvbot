@@ -2,7 +2,7 @@ $(document).ready(function() {
   var socket = io();
   var m_id = 0;
   var queue = [];
-  var duration = "+=10.0";
+  var duration = "+=1000.0";
   var popout = false;
   var timerHandle;
   var buzzerHandle = 0;
@@ -10,10 +10,11 @@ $(document).ready(function() {
   setInterval(function() {
     var data = queue.shift();
     if (data) {
+      var founder = data.user.founder ? ' founder' : '';
       var id = getId(data.from);
       var html = tmpl('message_popup_tmpl', {
         id: m_id, 
-        style: data.style + ' ' + data.user.nick,
+        style: data.style + ' ' + data.user.nick + founder,
         icon: data.image_url, 
         user: data.user, 
         message: data.body 

@@ -27,10 +27,13 @@ var BanHammerPlugin = function(app, config, io, client) {
   // keeps track of last X things someone said
   var repeatBank = {};
   setInterval(function() {
-    // TODO clean up the tail of this collection every N seonds.
-    // right now it will trigger when someone types say !view three times
-    // in a very long session
-  });
+    for (key in repeatBank) {
+      // clean up the tail of this collection every N seonds.
+      // right now it will trigger when someone types say !view three times
+      // in a very long session
+      repeatBank[key].shift();
+    }
+  }, 1000);
 
   var spamWarn = {};
   setInterval(function() {

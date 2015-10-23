@@ -39,7 +39,7 @@ ul li div.text-container:after {
     border-color: transparent #024E68;
     position: absolute;
     left: -20px;
-    top: 26px;
+    top: 28px;
     display: block;
 }
 
@@ -59,6 +59,8 @@ ul li user {
     padding-left: 8px;
     height: 18px;
     line-height: 18px;
+    /*border-bottom: 1px solid #fff;*/
+    border-top: 1px solid #fff;
 }
 
 ul li message {
@@ -86,7 +88,8 @@ ul li.joined div.text-container:after {
 
 ul li.joined user {
     background-color: #00BB3F;
-    color: #007929;
+    /*color: #007929;*/
+    color: #fff;
 }
 
 ul li.joined message {
@@ -100,7 +103,8 @@ ul li.left div.text-container:after {
 
 ul li.left user {
     background-color: #666;
-    color: #333;
+    /*color: #333;*/
+    color: #fff;
 }
 
 ul li.left message {
@@ -119,23 +123,58 @@ ul li.follower:before {
     left: -18px;
     border-radius: 45px;
     border: 2px solid #3AAACF;
+    z-index: 100;
 }
 
 ul li img.icon-follower {
     position: absolute;
     left: -30px;
     top: 26px;
+    z-index: 100;
 }
 
-ul li img.themite {
-    content: url("http://192.168.1.73:3000/images/forum-badge-themis.png");
+ul li div.icon-founder {
     width: 128px;
-    height: 25px;
+    height: 26px;
     float: right;
     margin: 0;
     padding: 0;
     position: relative;
-    top: -3px;
+    top: -4px;
+}
+
+ul li.founder img.icon-founder-frame {
+    position: absolute;
+    top: -13px;
+    left: -8px;
+}
+
+l li div.themite {
+    background: url("/images/forum-badge-themis.png");
+}
+
+ul li div.astraean {
+    background: url("/images/forum-badge-astraean.png");
+}
+
+ul li div.hyperion {
+    background: url("/images/forum-badge-hyperion.png");
+}
+
+ul li div.delfos {
+    background: url("/images/forum-badge-fos.png");
+}
+
+ul li div.delfi {
+    background: url("/images/forum-badge-fi.png");
+}
+
+ul li div.efkosnan {
+    background: url("/images/forum-badge-nan.png");
+}
+
+ul li div.chosen {
+    background: url("/images/forum-badge-chosen.png");
 }
 
 .position {
