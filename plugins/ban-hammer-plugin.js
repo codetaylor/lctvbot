@@ -33,7 +33,7 @@ var BanHammerPlugin = function(app, config, io, client) {
       // in a very long session
       repeatBank[key].shift();
     }
-  }, 1000);
+  }, 3000);
 
   var spamWarn = {};
   setInterval(function() {

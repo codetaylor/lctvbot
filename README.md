@@ -8,6 +8,7 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
 
   * kick
   * temporary/permanent ban
+  * greeting
   * proxy account
   * follower recognition (via RSS)
   * control view

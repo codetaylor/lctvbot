@@ -131,6 +131,9 @@ var UserPlugin = function(app, config, io, client) {
         if (Util.isOperator(nick, config)) {
 
           if (message.indexOf('!greeting') === 0) {
+
+            // usage: !greeting [<'true'|'false'>]
+
             if (split.length === 1) {
               client.sendGroupchat('greeting: ' + storage.getItem('settings').greeting);
             } else {
