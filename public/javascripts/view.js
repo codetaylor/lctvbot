@@ -179,7 +179,7 @@ $(document).ready(function() {
       max: 60,
       displayInput: false,
       width: 44,
-      fgColor: '#007929',
+      fgColor: '#A65500',
       bgColor: '#111111',
       thickness: 0.175
     });
@@ -188,8 +188,8 @@ $(document).ready(function() {
       min: 0,
       max: minutes,
       width: 64,
-      fgColor: '#3AAACF',
-      bgColor: '#024E68',
+      fgColor: '#FF8300',
+      bgColor: '#A65500',
       thickness: 0.2
     });
 

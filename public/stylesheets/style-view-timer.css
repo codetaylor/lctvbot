@@ -15,34 +15,34 @@
     height: 64px;
     padding: 4px;
     border-radius: 128px;
-    border: 4px solid #999;
-    bottom: 56px;
+    border: 4px solid #3AAACF;
+    bottom: 72px;
     left: 16px;
 }
 
-.timer-wrapper input {
+.timer-wrapper input[type="text"] {
     font-size: 26px !important;
     height: 32px !important;
     width: 33px !important;
     margin-top: 16px !important;
     margin-left: -49px !important;
+    color: #3AAACF !important;
 }
 
 .timer-wrapper .text-container {
     padding-left: 80px;
     margin: 0px;
-    color: #666;
 }
 
 .timer-wrapper .text-container h1 {
     margin: 0px;
     margin-top: 5px;
-    color: #999;
+    color: #3AAACF;
 }
 
 .timer-wrapper .text-container p {
     margin: 0px;
     font-weight: bold;
     font-size: 18px;
+    color: #05779D;
 }
-

@@ -59,8 +59,6 @@ ul li user {
     padding-left: 8px;
     height: 18px;
     line-height: 18px;
-    /*border-bottom: 1px solid #fff;*/
-    border-top: 1px solid #fff;
 }
 
 ul li message {
@@ -149,7 +147,7 @@ ul li.founder img.icon-founder-frame {
     left: -8px;
 }
 
-l li div.themite {
+ul li div.themite {
     background: url("/images/forum-badge-themis.png");
 }
 

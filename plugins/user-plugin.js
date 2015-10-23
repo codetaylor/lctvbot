@@ -22,7 +22,7 @@ var UserPlugin = function(app, config, io, client) {
     storage.setItem('users', users);
   }
 
-  console.log('Loaded ' + users.length + ' users');
+  console.log('Loaded ' + Object.keys(users).length + ' users');
 
   client.on('stanza', function(data) {
 
