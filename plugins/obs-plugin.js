@@ -32,10 +32,10 @@ var OBSPlugin = function(app, config, io, client) {
 
             // usage: !view
 
-            if (cooldown) {
+            /*if (cooldown) {
               client.sendGroupchat('Sorry, @' + nick + ', !view is on cooldown for ' + cooldown + ' more seconds.');
               return;
-            }
+            }*/
 
             cooldown = 30;
 
@@ -47,16 +47,16 @@ var OBSPlugin = function(app, config, io, client) {
               OBS.setCurrentScene('Desktop2');
             }
 
-            var handle = setInterval(function() {
+            /*var handle = setInterval(function() {
               --cooldown;
               if (cooldown == 0) {
                 clearInterval(handle);
                 // client.sendGroupchat('Try changing the view with !view.');
               }
-            }, 1000);
+            }, 1000);*/
 
           } else {
-            client.sendGroupchat('@' + nick + ', donate or pre-order and gain access to this command!');
+            //client.sendGroupchat('@' + nick + ', donate or pre-order and gain access to this command!');
 
           }
         }
