@@ -191,7 +191,7 @@ var BanHammerPlugin = function(app, config, io, client) {
   var handleSpammer = function(from, nick, message, callback) {
     if (!spamWarn[from]) {
       // hasn't been warned
-      var message = '*bot* @' + nick + ': ' + message;
+      var message = '@' + nick + ': ' + message;
       client.sendGroupchat(message);
       // add a warning
       spamWarn[from] = {
