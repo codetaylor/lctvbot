@@ -110,7 +110,7 @@ $(document).ready(function() {
     //console.log(data);
     getId(data.from);
     data.style = (data.op) ? 'op' : '';
-    data.style += (data.user.isFollower) ? ' follower' : '';
+    data.style += (data.user.follower) ? ' follower' : '';
     if (data.type == 'groupchat') {
       queue.push(data);
     }
@@ -119,7 +119,7 @@ $(document).ready(function() {
     //console.log('muc:available: ');
     console.log(data);
     data.style = 'joined';
-    data.style += (data.user.isFollower) ? ' follower' : '';
+    data.style += (data.user.follower) ? ' follower' : '';
     data.body = data.user.nick + ' joined the channel';
     queue.push(data);
   });
@@ -127,7 +127,7 @@ $(document).ready(function() {
     //console.log('muc:unavailable: ');
     console.log(data);
     data.style = 'left';
-    data.style += (data.user.isFollower) ? ' follower' : '';
+    data.style += (data.user.follower) ? ' follower' : '';
     data.body = data.user.nick + ' left the channel';
     queue.push(data);
   });

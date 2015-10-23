@@ -18,7 +18,7 @@ var BanHammerPlugin = function(app, config, io, client) {
       for (var i = value.length - 1; i >= 0; --i) {
         if (value[i] < getTimestamp()) {
           value.splice(i, 1);
-          console.log('Spam bank reduced to ' + value.length + ' for ' + key);
+          //console.log('Spam bank reduced to ' + value.length + ' for ' + key);
         }
       }
     }
@@ -49,7 +49,7 @@ var BanHammerPlugin = function(app, config, io, client) {
           spamWarn[key].count -= 1;
           // re-up the timestamp
           spamWarn[key].time = getTimestamp();
-          console.log('Spam warning level reduced to ' + spamWarn[key].count + ' for ' + key);
+          //console.log('Spam warning level reduced to ' + spamWarn[key].count + ' for ' + key);
         }
       }
     }

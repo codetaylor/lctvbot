@@ -97,7 +97,7 @@ var ClientViewPlugin = function(app, config, io, client) {
           if (body.indexOf(k) === 0) {
 
             var user = storage.getItem('users')[data.attrs.from];
-            if (!user.isFollower && !Util.isOperator(nick, config)) {
+            if (!user.follower && !Util.isOperator(nick, config)) {
               // reserved for ops and followers
               client.sendGroupchat('@' + nick + ': Follow and get access to this command!');
               return;

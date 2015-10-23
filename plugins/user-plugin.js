@@ -12,9 +12,10 @@ var UserPlugin = function(app, config, io, client) {
     var user = users[config.room + '/' + config.nick] = {
       nick: config.nick,
       visits: 1,
-      isFollower: false,
+      follower: false,
       role: 'moderator',
       affiliation: 'admin',
+      founder: false,
       greeting: false
     };
     // persist
@@ -75,7 +76,7 @@ var UserPlugin = function(app, config, io, client) {
 
               // update the user              
               user.visits++;
-              user.isFollower = followers[nick.toLowerCase()] ? true : false;
+              user.follower = followers[nick.toLowerCase()] ? true : false;
               user.role = data.getChild('x').getChild('item').attrs.role;
               user.affiliation = data.getChild('x').getChild('item').attrs.affiliation;
               
@@ -99,7 +100,7 @@ var UserPlugin = function(app, config, io, client) {
               var user = users[data.attrs.from] = {
                 nick: nick,
                 visits: 1,
-                isFollower: followers[nick.toLowerCase()] ? true : false,
+                follower: followers[nick.toLowerCase()] ? true : false,
                 role: data.getChild('x').getChild('item').attrs.role,
                 affiliation: data.getChild('x').getChild('item').attrs.affiliation,
                 greeting: true,
@@ -171,9 +172,12 @@ var UserPlugin = function(app, config, io, client) {
               var user = users[config.room + '/' + nickParam] = {
                 nick: nickParam,
                 visits: 0,
-                isFollower: false,
+                follower: false,
+                founder: false,
+                greeting: true,
                 role: '',
-                affiliation: ''
+                affiliation: '',
+                donations: 0
               };
             }
 
@@ -223,7 +227,7 @@ var UserPlugin = function(app, config, io, client) {
       return;
     }
 
-    if (user.isFollower) {
+    if (user.follower) {
       client.sendGroupchat(user.nick + '! Thanks again for following!');
     } else if (user.visits > 2) {
       client.sendGroupchat('Hey, ' + user.nick + '! What\'s new?');

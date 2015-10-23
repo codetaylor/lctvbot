@@ -22,7 +22,7 @@
 
       <script type="text/html" id="message_popup_tmpl">
         <li id="message_<%=id%>" class="message <%=style%>">
-          <% if (user.isFollower) { %>
+          <% if (user.follower) { %>
             <img class="icon-follower" src="/images/follower.png" />
           <% } %>
           <% if (user.founder) { %>
