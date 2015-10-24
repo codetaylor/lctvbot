@@ -16,6 +16,8 @@ var BanHammerPlugin = function(params) {
   var maxRepeats = 3;
   var repeatPruneSeconds = 60;
   var maxMessageLength = 350;
+  var revolverRateSeconds = 60;
+  var revolverLimit = 4;
 
   // maintains 
   var spamBank = {};
@@ -71,9 +73,10 @@ var BanHammerPlugin = function(params) {
   }
   setInterval(function() {
     var users = storage.getItem('users');
+    var timestamp = getTimestamp();
     for (key in banBank) {
       var dirty = false;
-      if (banBank[key].time < getTimestamp()) {
+      if (banBank[key].time < timestamp) {
         // expire the ban
         unban(key.split('/')[1]);
         delete users[key].uban;
@@ -85,6 +88,19 @@ var BanHammerPlugin = function(params) {
       storage.setItem('users', users);
     }
   }, 5 * 1000);
+
+  var revolver = {};
+  setInterval(function() {
+    var timestamp = getTimestamp();
+    for (key in revolver) {
+      var entries = revolver[key];
+      for (var i = entries.length - 1; i >= 0; --i) {
+        if (entries[i] < timestamp) {
+          entries.splice(i, 1);
+        }
+      }
+    }
+  }, 1000);
 
   client.on('stanza', function(data) {
 
@@ -111,6 +127,21 @@ var BanHammerPlugin = function(params) {
           // someone else joined/left the room we're in
           //console.log(JSON.stringify(data, null, 2));
 
+          if (data.attrs.type == 'unavailable') {
+            if (!revolver[data.attrs.from]) {
+              revolver[data.attrs.from] = [ getTimestamp() + (revolverRateSeconds * 1000) ];
+            } else {
+              revolver[data.attrs.from].push(getTimestamp() + (revolverRateSeconds * 1000));
+            }
+            if (revolver[data.attrs.from].length >= revolverLimit) {
+              handleSpammer(data.attrs.from, Util.getNickFrom(data.attrs.from), 'Please stay in or out of the room, thanks.');
+
+              // alert the view to a spammer
+              io.sockets.in(config.room).emit('sk3lls:spammer', {
+                from: data.attrs.from
+              });
+            }
+          }
         }
       }
 

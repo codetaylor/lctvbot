@@ -80,20 +80,21 @@ var UserPlugin = function(params) {
             if (users[data.attrs.from]) {
               var user = users[data.attrs.from];
 
-              // update the user              
+              // update the user's visits
               user.visits++;
+
+              // update these as they may change
               user.follower = followers[nick.toLowerCase()] ? true : false;
               user.role = data.getChild('x').getChild('item').attrs.role;
               user.affiliation = data.getChild('x').getChild('item').attrs.affiliation;
               
+              // defaults
               if (!user.hasOwnProperty('greeting')) {
                 user.greeting = true;
               }
-              
               if (!user.hasOwnProperty('founder')) {
                 user.founder = false;
               }
-              
               if (!user.hasOwnProperty('donations')) {
                 user.donations = 0;
               }
