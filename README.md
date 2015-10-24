@@ -34,6 +34,10 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
 
   For all commands, `nick` may be prefixed with `@`.
 
+  Commands that are available in chat are marked with `chat`.
+
+  Commands that are available in the console are marked with `console`.
+
 ### Admin Commands
 
 #### AFK/Back
@@ -42,11 +46,15 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
 !afk
 ```
 
+`chat` `console`
+
 Enables the OBS source titled `AFK`.
 
 ```
 !back
 ```
+
+`chat` `console`
 
 Disables the OBS source titled `AFK`.
 
@@ -55,6 +63,8 @@ Disables the OBS source titled `AFK`.
 ```
 !task <'set'|'clear'> [<task>]
 ```
+
+`chat` `console`
 
 Sets or clears the task display in the visual overlay. If used with `set` the `task` parameter is required. If used without `set` the `task` parameter is not needed.
 
@@ -66,6 +76,8 @@ Note: This is also accessible via the Control View.
 !focus [<minutes|'off'>]
 ```
 
+`chat` `console`
+
 Starts the Focus timer if used with a numeric `minutes` parameter. `off` will disable the timer. If no parameter is passed a default pomodoro time of 25 minutes will be assumed.
 
 Note: This is also accessible via the Control View.
@@ -76,17 +88,23 @@ Note: This is also accessible via the Control View.
 !kick <nick> [<reason>]
 ```
 
+`chat` `console`
+
 Kicks user `nick` from your room for optional `reason`. The user is free to immediately re-enter.
 
 ```
 !ban <nick> <minutes> [<reason>]
 ```
 
+`chat` `console`
+
 Bans user `nick` from your room for `minutes` and optional `reason`. If the `minutes` parameter is omitted, or `*` is used, user `nick` will be banned permanently.
 
 ```
 !uban <nick>
 ```
+
+`chat` `console`
 
 Lifts a ban on user `nick`.
 
@@ -96,11 +114,15 @@ Lifts a ban on user `nick`.
 !user <nick> <'get'|'set'> <variable> [<value>]
 ```
 
+`chat` `console`
+
 Arbitrary data can be stored on user `nick` with the `set` command, requiring the `value` parameter. The data can be retrieved using `get` and doesn't require `value`.
 
 ```
 !user <nick>
 ```
+
+`chat` `console`
 
 Using the command with only the `nick` parameter will dump the entire user object to the console.
 
@@ -110,11 +132,15 @@ Using the command with only the `nick` parameter will dump the entire user objec
 !greeting <'true'|'false'>
 ```
 
+`chat` `console`
+
 Turns the bot's greeting on and off.
 
 ### Follower Commands
 
 #### Popouts
+
+`chat` `console`
 
 The file `config/popout.json` contains an example configuration. You'll probably want to make your own commands and use your own images.
 
@@ -129,6 +155,8 @@ Images have been tested up to `600 x 600`.
 ```
 !view
 ```
+
+`chat` `console`
 
 Switches viewed desktops.
 
