@@ -1,5 +1,11 @@
-var UserPlugin = function(app, config, io, client) {
+var UserPlugin = function(params) {
   
+  var app = params.app;
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
+  var cli = params.cli;
+
   var storage = require('node-persist');
   var Util = require('../libs/Util');
 
@@ -38,16 +44,16 @@ var UserPlugin = function(app, config, io, client) {
         // children: away, chat, xa (not available), dnd (do not disturb)
         var show = data.getChild('show');
         if (show.getChild('away')) {
-          client.sendGroupchat(nick + ' is now away');
+          //client.sendGroupchat(nick + ' is now away');
 
         } else if (show.getChild('chat')) {
-          client.sendGroupchat(nick + ' is now available for chat');
+          //client.sendGroupchat(nick + ' is now available for chat');
 
         } else if (show.getChild('xa')) {
-          client.sendGroupchat(nick + ' is no longer available');
+          //client.sendGroupchat(nick + ' is no longer available');
 
         } else if (show.getChild('dnd')) {
-          client.sendGroupchat('Do not disturb ' + nick);
+          //client.sendGroupchat('Do not disturb ' + nick);
         }
 
       } else {
@@ -126,100 +132,20 @@ var UserPlugin = function(app, config, io, client) {
 
         var nick = Util.getNickFrom(data.attrs.from);
         var message = data.getChildText('body');
-        var split = message.split(' ');
 
         // operator only
-        if (Util.isOperator(nick, config)) {
-
-          if (message.indexOf('!greeting') === 0) {
-
-            // usage: !greeting [<'true'|'false'>]
-
-            if (split.length === 1) {
-              client.sendGroupchat('greeting: ' + storage.getItem('settings').greeting);
-            } else {
-              storage.getItem('settings').greeting = (split[1] == 'true') ? true : false;
-            }
-
-          } else if (message.indexOf('!user') === 0) {
-
-            // usage: !user <nick> <'get'|'set'> <variable> [<value>]
-
-            var nickParam = split[1];
-            var users = storage.getItem('users');
-            var user = users[config.room + '/' + nickParam];
-            if (split.length == 2) {
-              // display the entire user
-              if (!user) {
-                client.sendGroupchat(nickParam + ': undefined user');
-              } else {
-                client.sendGroupchat('\n' + JSON.stringify(user, null, 1));
-              }
-              return;
-            }
-
-            if (split.length < 4) {
-              console.log('Expected 4 arguments, got ' + split.length + ': ' + split);
-            }
-            // clean up the nick
-            if (nickParam.indexOf('@') === 0) {
-              nickParam = nickParam.substring(1);
-            }
-            var command = split[2];
-            var variable = split[3];
-            if (!user) {
-              // create new empty user
-              var user = users[config.room + '/' + nickParam] = {
-                nick: nickParam,
-                visits: 0,
-                follower: false,
-                founder: false,
-                greeting: true,
-                role: '',
-                affiliation: '',
-                donations: 0
-              };
-            }
-
-            switch (command) {
-              case 'get':
-                client.sendGroupchat(nickParam + ' - ' + variable + ': ' + user[variable]);
-                break;
-
-              case 'set':
-                if (split.length < 5) {
-                  // TODO notify
-                  return;
-                }
-                var value = split[4];
-                if (isNaN(value)) {
-                  // is string
-                  if (value == 'true') {
-                    value = true;
-                  } else if (value == 'false') {
-                    value = false;
-                  }
-                } else {
-                  // is number
-                  value = +value;
-                }
-                user[variable] = value;
-                client.sendGroupchat(nickParam + ' - ' + variable + ': ' + user[variable]);
-                console.log('user set ' + nickParam + ' - ' + variable + ': ' + user[variable]);
-                break;
-            }
-
-            storage.setItem('users', users);
-
-          }
+        if (Util.isOperator(nick, config) && message.indexOf('!') === 0) {
+          handleCommand(message, false);
         }
-
-
 
       }
 
     }
 
+  });
+
+  cli.on('command', function(command) {
+    handleCommand(command, true);
   });
 
   var greetUser = function(user) {
@@ -240,6 +166,109 @@ var UserPlugin = function(app, config, io, client) {
 
   var getTimestamp = function() {
     return Math.floor(Date.now() / 1000);
+  };
+
+  var handleCommand = function(message, local) {
+
+    var split = message.split(' ');
+
+    if (message.indexOf('!greeting') === 0) {
+
+      // usage: !greeting [<'true'|'false'>]
+
+      if (split.length === 1) {
+        client.sendGroupchat('greeting: ' + storage.getItem('settings').greeting);
+      } else {
+        storage.getItem('settings').greeting = (split[1] == 'true') ? true : false;
+      }
+
+    } else if (message.indexOf('!user') === 0) {
+
+      // usage: !user <nick> <'get'|'set'> <variable> [<value>]
+
+      var nickParam = split[1];
+      var users = storage.getItem('users');
+      var user = users[config.room + '/' + nickParam];
+      if (split.length == 2) {
+        // display the entire user
+        if (!user) {
+          if (local) {
+            console.log(nickParam + ': undefined');  
+          } else {
+            client.sendGroupchat(nickParam + ': undefined');
+          }
+        } else {
+          if (local) {
+            console.log(JSON.stringify(user, null, 1));  
+          } else {
+            client.sendGroupchat('\n' + JSON.stringify(user, null, 1));
+          }
+        }
+        return;
+      }
+
+      if (split.length < 4) {
+        console.log('Expected 4 arguments, got ' + split.length + ': ' + split);
+      }
+      // clean up the nick
+      if (nickParam.indexOf('@') === 0) {
+        nickParam = nickParam.substring(1);
+      }
+      var command = split[2];
+      var variable = split[3];
+      if (!user) {
+        // create new empty user
+        var user = users[config.room + '/' + nickParam] = {
+          nick: nickParam,
+          visits: 0,
+          follower: false,
+          founder: false,
+          greeting: true,
+          role: '',
+          affiliation: '',
+          donations: 0
+        };
+      }
+
+      switch (command) {
+        case 'get':
+          if (local) {
+            console.log(nickParam + ' - ' + variable + ': ' + user[variable]);  
+          } else {
+            client.sendGroupchat(nickParam + ' - ' + variable + ': ' + user[variable]);
+          }
+          break;
+
+        case 'set':
+          if (split.length < 5) {
+            // TODO notify
+            return;
+          }
+          var value = split[4];
+          if (isNaN(value)) {
+            // is string
+            if (value == 'true') {
+              value = true;
+            } else if (value == 'false') {
+              value = false;
+            }
+          } else {
+            // is number
+            value = +value;
+          }
+          user[variable] = value;
+          if (local) {
+            console.log('user set ' + nickParam + ' - ' + variable + ': ' + user[variable]);  
+          } else {
+            client.sendGroupchat(nickParam + ' - ' + variable + ': ' + user[variable]);
+          }
+          break;
+      }
+
+      storage.setItem('users', users);
+
+    }
+
   };
 
 };

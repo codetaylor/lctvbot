@@ -1,6 +1,10 @@
+## What is this?
+
+This is the code that powers my stream overlay. The more that I work on this, the more specific to my needs it becomes. It isn't really meant to be used as-is because all of the graphics are missing and like I mentioned, it is very specific to my needs. However, it can still be educational in that you can go into the code and see how I accomplished different things.
+
 Missing images; cause, you know, copyright.
 
-I don't plan on maintaining this or providing support - I just don't have the time.
+I don't plan on maintaining this or providing support - I just don't have the time. I only plan on updating this when I need a new feature specific to my use case.
 
 If you want to maintain this or clean it up or whatever, fork it. Just give me some credit, k? Thanks. :)
 
@@ -31,6 +35,20 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
   For all commands, `nick` may be prefixed with `@`.
 
 ### Admin Commands
+
+#### AFK/Back
+
+```
+!afk
+```
+
+Enables the OBS source titled `AFK`.
+
+```
+!back
+```
+
+Disables the OBS source titled `AFK`.
 
 #### Task
 
@@ -79,6 +97,12 @@ Lifts a ban on user `nick`.
 ```
 
 Arbitrary data can be stored on user `nick` with the `set` command, requiring the `value` parameter. The data can be retrieved using `get` and doesn't require `value`.
+
+```
+!user <nick>
+```
+
+Using the command with only the `nick` parameter will dump the entire user object to the console.
 
 #### Settings
 

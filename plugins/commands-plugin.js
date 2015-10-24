@@ -1,5 +1,10 @@
-var CommandsPlugin = function(app, config, io, client) {
+var CommandsPlugin = function(params) {
   
+  var app = params.app;
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
+
   var cooldown = false;
 
   client.on('stanza', function(data) {

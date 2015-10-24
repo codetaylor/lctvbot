@@ -1,4 +1,9 @@
-var BanHammerPlugin = function(app, config, io, client) {
+var BanHammerPlugin = function(params) {
+
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
+  var cli = params.cli;
 
   var xmpp = require('node-xmpp-client');
   var Util = require('../libs/Util');
@@ -8,6 +13,7 @@ var BanHammerPlugin = function(app, config, io, client) {
   var warnDurationSeconds = 60 * 10;
   var banDurationSeconds = 60;
   var maxRepeats = 3;
+  var repeatPruneSeconds = 60;
   var maxMessageLength = 350;
 
   // maintains 
@@ -29,11 +35,9 @@ var BanHammerPlugin = function(app, config, io, client) {
   setInterval(function() {
     for (key in repeatBank) {
       // clean up the tail of this collection every N seonds.
-      // right now it will trigger when someone types say !view three times
-      // in a very long session
       repeatBank[key].shift();
     }
-  }, 3000);
+  }, repeatPruneSeconds * 1000);
 
   var spamWarn = {};
   setInterval(function() {
@@ -104,7 +108,8 @@ var BanHammerPlugin = function(app, config, io, client) {
         // check for ops
         var nick = Util.getNickFrom(data.attrs.from);
         if (Util.isOperator(nick, config)) {
-          handleCommand(data);
+          var message = data.getChildText('body');
+          handleCommand(message, false);
           return; // bypass the ban hammer for ops
         }
 
@@ -182,10 +187,14 @@ var BanHammerPlugin = function(app, config, io, client) {
             spamBank[data.attrs.from] = [ getTimestamp() + rateSeconds];
           });
         }
-        console.log('spam-counter: ' + data.attrs.from + ' => ' + spamBank[data.attrs.from].length);
+        //console.log('spam-counter: ' + data.attrs.from + ' => ' + spamBank[data.attrs.from].length);
       }
     }
 
+  });
+
+  cli.on('command', function(command) {
+    handleCommand(command, true);
   });
 
   var handleSpammer = function(from, nick, message, callback) {
@@ -234,9 +243,7 @@ var BanHammerPlugin = function(app, config, io, client) {
     }
   };
 
-  var handleCommand = function(data) {
-
-    var message = data.getChildText('body');
+  var handleCommand = function(message, local) {
 
     if (message.indexOf('!kick') === 0) {
 

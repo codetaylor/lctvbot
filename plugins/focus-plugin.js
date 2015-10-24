@@ -1,4 +1,10 @@
-var FocusPlugin = function(app, config, io, client) {
+var FocusPlugin = function(params) {
+
+  var app = params.app;
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
+  var cli = params.cli;
 
   var Util = require('../libs/Util')  ;
   var defaultFocusMinutes = 25;
@@ -7,50 +13,19 @@ var FocusPlugin = function(app, config, io, client) {
 
     if (data.is('message')) {
 
-      if (data.getChild('delay')) {
-        // this is most likely room history
-
-      } else {
-
+      if (!data.getChild('delay')) { // ignore room history
         var nick = Util.getNickFrom(data.attrs.from);
 
-        // operator only
-        if (Util.isOperator(nick, config)) {
-
-          // we sent this message
+        if (Util.isOperator(nick, config)) { // operator only
           var message = data.getChildText('body');
-          if (message.indexOf('!focus') === 0) {
-
-            // usage: !focus [<'off'|minutes>]
-
-            var split = message.split(' ');
-            if (split.length === 2 && split[1] == 'off') {
-              // turn it off
-              io.sockets.in(config.room).emit('sk3lls:focus', {
-                off: true
-              });
-
-            } else if (split.length === 2 && !isNaN(split[1])) {
-              // time parameter
-              var minutes = +split[1];
-              if (minutes < 1) {
-                minutes = 1;
-              }
-              io.sockets.in(config.room).emit('sk3lls:focus', {
-                minutes: minutes
-              });
-
-            } else {
-              // no time parameter or invalid time parameter
-              io.sockets.in(config.room).emit('sk3lls:focus', {
-                minutes: defaultFocusMinutes
-              });
-
-            }
-          }
+          handleCommand(message, false);
         }
       }
     }
+  });
+
+  cli.on('command', function(command) {
+    handleCommand(command, true);
   });
 
   io.on('connection', function(socket) {
@@ -76,9 +51,39 @@ var FocusPlugin = function(app, config, io, client) {
         off: true
       });
     });
-
   });
 
+  var handleCommand = function(message, local) {
+    if (message.indexOf('!focus') === 0) {
+
+      // usage: !focus [<'off'|minutes>]
+
+      var split = message.split(' ');
+      if (split.length === 2 && split[1] == 'off') {
+        // turn it off
+        io.sockets.in(config.room).emit('sk3lls:focus', {
+          off: true
+        });
+
+      } else if (split.length === 2 && !isNaN(split[1])) {
+        // time parameter
+        var minutes = +split[1];
+        if (minutes < 1) {
+          minutes = 1;
+        }
+        io.sockets.in(config.room).emit('sk3lls:focus', {
+          minutes: minutes
+        });
+
+      } else {
+        // no time parameter or invalid time parameter
+        io.sockets.in(config.room).emit('sk3lls:focus', {
+          minutes: defaultFocusMinutes
+        });
+
+      }
+    }
+  };
 
 };
 

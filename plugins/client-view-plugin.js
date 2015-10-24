@@ -1,4 +1,10 @@
-var ClientViewPlugin = function(app, config, io, client) {
+var ClientViewPlugin = function(params) {
+
+  var app = params.app;
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
+  var cli = params.cli;
 
   var Util = require('../libs/Util');
   var UserImage = require('../libs/UserImage');
@@ -81,10 +87,10 @@ var ClientViewPlugin = function(app, config, io, client) {
     // console.log('Message: ');
     // console.log(data);
 
-    var body = data.getChildText('body');
+    var message = data.getChildText('body');
     var nick = Util.getNickFrom(data.attrs.from);
 
-    if (body.indexOf('!') === 0) { // is command
+    if (message.indexOf('!') === 0) { // is command
 
       var filename = require('path').join(app.get('configPath'), 'popout.json');
       var popoutCommands = JSON.parse(require('fs').readFileSync(filename));
@@ -94,7 +100,7 @@ var ClientViewPlugin = function(app, config, io, client) {
 
         if (popoutCommands.hasOwnProperty(k)) {
 
-          if (body.indexOf(k) === 0) {
+          if (message.indexOf(k) === 0) {
 
             var user = storage.getItem('users')[data.attrs.from];
             if (!user.follower && !Util.isOperator(nick, config)) {
@@ -103,32 +109,12 @@ var ClientViewPlugin = function(app, config, io, client) {
               return;
             }
 
-            var message = popoutCommands[k].message;
-            
-            if (message) {
-              // if the message is an array, pick a random one
-              if (message.constructor === Array) {
-                message = message[Math.floor(Math.random() * message.length)];
-              }
-              
-              // overwrites default message if caller supplies a message after the command
-              /*if (body.length > k.length) {
-                message = body.substring(k.length).trim();
-              }*/
-            }
-
-            // send the popout command to the view
-            io.sockets.in(config.room).emit('sk3lls:popout', {
-              image: popoutCommands[k].image,
-              message: message,
-              offset: popoutCommands[k].bubble_position
-            });
-
+            handleCommand(false, popoutCommands[k]);
           }
         }
       }
 
-    } else if (body.indexOf('!') !== 0) { // is not ! command
+    } else if (message.indexOf('!') !== 0) { // is not ! command
       // get the user's image, send the message to the view
       UserImage.get(nick, function (image_url) {
         io.sockets.in(config.room).emit('message', {
@@ -136,7 +122,7 @@ var ClientViewPlugin = function(app, config, io, client) {
           to: data.attrs.to,
           op: Util.isOperator(nick, config),
           type: data.attrs.type,
-          body: body,
+          body: message,
           image_url: image_url,
           user: storage.getItem('users')[data.attrs.from]
         });
@@ -144,10 +130,43 @@ var ClientViewPlugin = function(app, config, io, client) {
     }
   };
 
+  cli.on('command', function(command) {
+    var filename = require('path').join(app.get('configPath'), 'popout.json');
+    var popoutCommands = JSON.parse(require('fs').readFileSync(filename));
+
+    // loop through the popout commands
+    for (var k in popoutCommands) {
+
+      if (popoutCommands.hasOwnProperty(k)) {
+
+        if (command.indexOf(k) === 0) {
+          handleCommand(true, popoutCommands[k]);
+        }
+      }
+    }
+  });
+
+  var handleCommand = function(local, popoutCommand) {
+    var popoutMessage = popoutCommand.message;
+                
+    if (popoutMessage) {
+      // if the message is an array, pick a random one
+      if (popoutMessage.constructor === Array) {
+        popoutMessage = popoutMessage[Math.floor(Math.random() * popoutMessage.length)];
+      }      
+    }
+    // send the popout command to the view
+    io.sockets.in(config.room).emit('sk3lls:popout', {
+      image: popoutCommand.image,
+      message: popoutMessage,
+      offset: popoutCommand.bubble_position
+    });
+  };
+
   var handlePresence = function(data) {
 
     var nick = Util.getNickFrom(data.attrs.from);
-    var body = data.getChildText('body');
+    var message = data.getChildText('message');
     var isSelf = data.attrs.from == config.room + '/' + config.nick;
 
     if (data.attrs.type == 'unavailable') {
@@ -158,7 +177,7 @@ var ClientViewPlugin = function(app, config, io, client) {
           to: data.attrs.to,
           op: isSelf,
           type: data.attrs.type,
-          body: body,
+          message: message,
           image_url: image_url,
           user: storage.getItem('users')[data.attrs.from]
         });
@@ -172,7 +191,7 @@ var ClientViewPlugin = function(app, config, io, client) {
           to: data.attrs.to,
           op: isSelf,
           type: data.attrs.type,
-          body: body,
+          message: message,
           image_url: image_url,
           user: storage.getItem('users')[data.attrs.from]
         });

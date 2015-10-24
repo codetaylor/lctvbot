@@ -78,6 +78,12 @@ module.exports = function(config, postOnlineCallback) {
     }
   };
 
+  client.sendGroupchatAsSelf = function(message) {
+    client.send(new XMPP.Stanza('message', { to: config.room, type: 'groupchat' })
+      .c('body').t(message)
+    );
+  };
+
   client.sendChat = function(to, message) {
     // doesn't work
     client.send(new XMPP.Stanza('message', { to: config.session.domain + '/' + to, type: 'groupchat' })

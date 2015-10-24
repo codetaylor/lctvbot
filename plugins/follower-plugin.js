@@ -1,4 +1,9 @@
-var FollowerPlugin = function(app, config, io, client) {
+var FollowerPlugin = function(params) {
+
+  var app = params.app;
+  var config = params.config;
+  var io = params.io;
+  var client = params.client;
   
   var storage = require('node-persist');
   var feed = require('feed-read');
@@ -42,7 +47,7 @@ var FollowerPlugin = function(app, config, io, client) {
       if (!firstLoad) {
         for (var i = 0; i < newFollowers.length; ++i) {
           console.log('New follower: ' + newFollowers[i]);
-          client.sendGroupchat('New follower: ' + newFollowers[i]);
+          client.sendGroupchat('Thanks for following, ' + newFollowers[i] + '!');
           // do something cool for new followers!
           io.sockets.in(config.room).emit('sk3lls:new_follower', {
             nick: newFollowers[i]

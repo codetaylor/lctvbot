@@ -101,7 +101,7 @@ $(document).ready(function() {
     for (var i = queue.length - 1; i >= 0; --i) {
       if (queue[i].from == data.from) {
         queue.pop();
-        //console.log('Removed message index ' + i);
+        console.log('Removed message index ' + i);
       }
     }
   });

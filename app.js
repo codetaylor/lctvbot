@@ -1,5 +1,8 @@
 var postConnectDelaySeconds = 5;
 
+var CLI = require('./libs/CLI');
+var cli = new CLI();
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
@@ -20,7 +23,8 @@ var plugins = [
   'commands-plugin',
   'task-plugin',
   'focus-plugin',
-  'obs-plugin'
+  'obs-plugin',
+  'cli-plugin'
 ];
 
 var storage = require('node-persist');
@@ -50,10 +54,18 @@ var client = require('./libs/XMPPClient')(config, function() {
   console.log('Delay loading plugins for ' + postConnectDelaySeconds + ' seconds...');
   setTimeout(function() {
 
+    var params = {
+      app: app,
+      config: config,
+      io: io,
+      client: client,
+      cli: cli
+    };
+
     var success = 0;
     for (var i = 0; i < plugins.length; ++i) {
       try {
-        require('./plugins/' + plugins[i])(app, config, io, client);
+        require('./plugins/' + plugins[i])(params);
         ++success;
         console.log('Loaded plugin: ' + plugins[i]);
       } catch (e) {
@@ -73,7 +85,7 @@ require('./controllers/control')(app);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -150,5 +162,11 @@ app.exitHandler = function(opts, err) {
 process.on('exit', app.exitHandler.bind(null, { cleanup:true }));
 process.on('SIGINT', app.exitHandler.bind(null, { cleanup: true, exit: true }));
 process.on('uncaughtException', app.exitHandler.bind(null, { exit: true }));
+
+cli.on('command', function(command) {
+  if (command.indexOf('!exit') === 0) {
+    process.exit();
+  }
+});
 
 module.exports = app;
