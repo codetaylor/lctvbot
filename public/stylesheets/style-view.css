@@ -15,7 +15,7 @@ ul {
     padding: 0;
 }
 
-ul li {
+ul li.message {
     max-height: 0px;
     display: block;
     position: relative;
@@ -110,25 +110,35 @@ ul li.left message {
     color: #666;
 }
 
-ul li.follower:before {
-    content: "";
-    display: block;
-    width: 30px;
-    height: 30px;
+ul.badges {
     position: absolute;
-    background-color: #024E68;
-    top: 30px;
-    left: -18px;
-    border-radius: 45px;
-    border: 2px solid #3AAACF;
+    top: 34px;
+    right: 587px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
     z-index: 100;
+    width: 400px;
 }
 
-ul li img.icon-follower {
-    position: absolute;
-    left: -30px;
-    top: 26px;
-    z-index: 100;
+ul li.badge {
+    position: relative;
+    float: right;
+    margin: 0;
+    margin-left: 8px;
+    padding: 0;
+    display: inline-block;
+    width: 31px;
+    height: 31px;
+    background-color: #024E68;
+    border-radius: 45px;
+    border: 2px solid #3AAACF;
+}
+
+ul li.badge img {
+    position: relative;
+    top: -6px;
+    left: -13px;
 }
 
 ul li div.icon-founder {

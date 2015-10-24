@@ -13,6 +13,22 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var io = require('socket.io').listen(server);
 var fs = require('fs');
+var mkdirp = require('mkdirp');
+var backup = require('backup');
+var Util = require('./libs/Util');
+
+// backup ---------------------------------------------------------------------
+
+try {
+  var filename = './backup/backup-' + Util.getTimestamp() + '.gz';
+  mkdirp.sync('./backup');
+  backup.backup('./persist', filename);
+  console.log('Created backup: ' + filename);
+} catch (err) {
+  console.error(err);
+}
+
+// ----------------------------------------------------------------------------
 
 var immediatePlugins = [
   'follower-plugin',

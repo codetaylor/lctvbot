@@ -22,8 +22,14 @@
 
       <script type="text/html" id="message_popup_tmpl">
         <li id="message_<%=id%>" class="message <%=style%>">
-          <% if (user.follower) { %>
-            <img class="icon-follower" src="/images/follower.png" />
+          <% if (user.badges.length > 0) { %>
+            <ul class="badges">
+            <% for (var i = 0; i < user.badges.length; ++i) { %>
+              <li class="badge <%=user.badges[i]%>">
+                <img src="/images/badge-<%=user.badges[i]%>.png"/>
+              </li>
+            <% } %>
+            </ul>
           <% } %>
           <% if (user.founder) { %>
             <img class="icon-founder-frame" src="/images/hex.png" />

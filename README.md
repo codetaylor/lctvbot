@@ -20,6 +20,7 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
   * overlay images and text
   * overlay chat
   * OBS scene switching
+  * auto backups (via npm install backup -g; restore <from> <to>)
   * revolving door flood protection with escalating ban duration
   * message repeat protection with escalating ban duration
   * message flood protection with escalating ban duration
@@ -40,6 +41,16 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
   Commands that are available in the console are marked with `console`.
 
 ### Admin Commands
+
+#### Exit
+
+```
+!exit
+```
+
+`console`
+
+Exits the app.
 
 #### AFK/Back
 
