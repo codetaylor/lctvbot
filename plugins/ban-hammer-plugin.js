@@ -129,9 +129,9 @@ var BanHammerPlugin = function(params) {
 
           if (data.attrs.type == 'unavailable') {
             if (!revolver[data.attrs.from]) {
-              revolver[data.attrs.from] = [ getTimestamp() + (revolverRateSeconds * 1000) ];
+              revolver[data.attrs.from] = [ getTimestamp() + revolverRateSeconds ];
             } else {
-              revolver[data.attrs.from].push(getTimestamp() + (revolverRateSeconds * 1000));
+              revolver[data.attrs.from].push(getTimestamp() + revolverRateSeconds);
             }
             if (revolver[data.attrs.from].length >= revolverLimit) {
               handleSpammer(data.attrs.from, Util.getNickFrom(data.attrs.from), 'Please stay in or out of the room, thanks.');
