@@ -31,4 +31,5 @@ notes/
 public/images/
 public/audio/
 config/connection.json
+public/javascripts/jquery.pixelentity.shiner.min.js
 *.sh

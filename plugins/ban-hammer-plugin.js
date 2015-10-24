@@ -7,6 +7,7 @@ var BanHammerPlugin = function(params) {
 
   var xmpp = require('node-xmpp-client');
   var Util = require('../libs/Util');
+  var storage = require('node-persist');
 
   var rateSeconds = 15;
   var messageLimit = 10;
@@ -60,15 +61,30 @@ var BanHammerPlugin = function(params) {
   }, 1000);
 
   var banBank = {};
+  var users = storage.getItem('users');
+  for (key in users) {
+    if (users[key].uban) {
+      banBank[key] = {
+        time: users[key].uban
+      };
+    }
+  }
   setInterval(function() {
+    var users = storage.getItem('users');
     for (key in banBank) {
+      var dirty = false;
       if (banBank[key].time < getTimestamp()) {
         // expire the ban
         unban(key.split('/')[1]);
+        delete users[key].uban;
+        dirty = true;
         console.log('Ban auto-lifted from ' + key);
       }
     }
-  });
+    if (dirty) {
+      storage.setItem('users', users);
+    }
+  }, 5 * 1000);
 
   client.on('stanza', function(data) {
 
@@ -348,7 +364,10 @@ var BanHammerPlugin = function(params) {
       from = config.room + '/' + nick;
     }
 
+    var users = storage.getItem('users');
     delete banBank[from];
+    delete users[from].uban;
+    storage.setItem('users', users);
 
     var stanza = new xmpp.Stanza('iq', {
       from: config.session.local + '@' + config.session.domain + '/' + config.session.resource,
@@ -370,17 +389,20 @@ var BanHammerPlugin = function(params) {
   var ban = function(from, nick, duration, message) {
 
     if (!isNaN(duration)) {
+      var users = storage.getItem('users');
+      var expires = getTimestamp() + duration;
+      users[from].uban = expires;
+      storage.setItem('users', users);
       banBank[from] = {
-        time: getTimestamp() + duration,
-        duration: duration
-      };
-      console.log('Banned ' + from + ' for ' + toHHMMSS(duration));
+        time: expires
+      }
+      console.log('Banned ' + nick + ' for ' + toHHMMSS(duration));
     } else {
-      console.log('Banned ' + from + ' permanently');
+      console.log('Banned ' + nick + ' permanently');
     }
-    setTimeout(function() {
-      kick(from.split('/')[1], message);
-    }, 3000);
+    /*setTimeout(function() {
+      kick(nick, message);
+    }, 3000);*/
 
     var stanza = new xmpp.Stanza('iq', {
       from: config.session.local + '@' + config.session.domain + '/' + config.session.resource,

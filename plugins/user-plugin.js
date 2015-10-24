@@ -118,8 +118,6 @@ var UserPlugin = function(params) {
               storage.setItem('users', users);
             }
 
-            // greet
-            greetUser(user);
           }
         }
       }
@@ -147,22 +145,6 @@ var UserPlugin = function(params) {
   cli.on('command', function(command) {
     handleCommand(command, true);
   });
-
-  var greetUser = function(user) {
-    if (!user.greeting || !storage.getItem('settings').greeting) {
-      return;
-    }
-
-    if (user.follower) {
-      client.sendGroupchat(user.nick + '! Thanks again for following!');
-    } else if (user.visits > 2) {
-      client.sendGroupchat('Hey, ' + user.nick + '! What\'s new?');
-    } else if (user.visits > 1) {
-      client.sendGroupchat('Welcome back, ' + user.nick + '!');
-    } else {
-      client.sendGroupchat('Welcome to my channel, ' + user.nick + '!');
-    }
-  };
 
   var getTimestamp = function() {
     return Math.floor(Date.now() / 1000);

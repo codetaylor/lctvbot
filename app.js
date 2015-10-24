@@ -14,12 +14,16 @@ var bodyParser = require('body-parser');
 var io = require('socket.io').listen(server);
 var fs = require('fs');
 
+var immediatePlugins = [
+  'follower-plugin',
+  'user-plugin'
+];
+
 var plugins = [
   'client-view-plugin',
   'ban-hammer-plugin',
-  'follower-plugin',
   'rules-plugin',
-  'user-plugin',
+  'greeting-plugin',
   'commands-plugin',
   'task-plugin',
   'focus-plugin',
@@ -50,18 +54,30 @@ app.set('config', config);
 app.set('view engine', 'jade');
 
 // setup xmpp
-var client = require('./libs/XMPPClient')(config, function() {
+var XMPPClient = require('./libs/XMPPClient');
+var client = new XMPPClient(config);
+
+client.connect(function() {
   console.log('Delay loading plugins for ' + postConnectDelaySeconds + ' seconds...');
+  var params = {
+    app: app,
+    config: config,
+    io: io,
+    client: client,
+    cli: cli
+  };
+  var success = 0;
+  for (var i = 0; i < immediatePlugins.length; ++i) {
+    try {
+      require('./plugins/' + immediatePlugins[i])(params);
+      ++success;
+      console.log('Loaded plugin: ' + immediatePlugins[i]);
+    } catch (e) {
+      console.log(e.stack);
+    }
+  }
+  console.log('Successfully loaded ' + success + '/' + immediatePlugins.length + ' immediate plugins');
   setTimeout(function() {
-
-    var params = {
-      app: app,
-      config: config,
-      io: io,
-      client: client,
-      cli: cli
-    };
-
     var success = 0;
     for (var i = 0; i < plugins.length; ++i) {
       try {
@@ -72,12 +88,10 @@ var client = require('./libs/XMPPClient')(config, function() {
         console.log(e.stack);
       }
     }
-
-    console.log('Successfully loaded ' + success + '/' + plugins.length + ' plugins');
-    client.sendGroupchat('- sk3lls v1.0 online -');
+    console.log('Successfully loaded ' + success + '/' + plugins.length + ' delayed plugins');
+    //client.sendGroupchat('- sk3lls v1.0 online -');
   }, postConnectDelaySeconds * 1000);
 });
-app.set('client', client);
 
 // controllers
 require('./controllers/view')(app);
@@ -148,11 +162,9 @@ app.exitHandler = function(opts, err) {
     cleanup = true;
     if (opts.cleanup) {
       console.log('Cleanup...');
-      client.sendGroupchat(' - offline -');
+      //client.sendGroupchat(' - offline -');
       client.end();
-      if (client.proxy) {
-        client.proxy.end();
-      }
+      cli.end();
     }
     if (err) console.log(err.stack);
     if (opts.exit) process.exit();

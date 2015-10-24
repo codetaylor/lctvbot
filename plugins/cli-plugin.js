@@ -10,14 +10,15 @@ var CLIPlugin = function(params) {
   var storage = require('node-persist');
 
   cli.on('message', function(message) {
-    client.sendGroupchatAsSelf(message);
+    var asSelf = true;
+    client.sendGroupchat(message, asSelf);
   });
 
   client.on('stanza', function(data) {
     if (data.is('message')) {
       var nick = Util.getNickFrom(data.attrs.from);
       if (nick != config.proxy.nick) {
-        console.log('***' + nick + ': ' + data.getChildText('body'));
+        console.log('*** ' + nick + ': ' + data.getChildText('body'));
       }
     }
   });

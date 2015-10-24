@@ -1,95 +1,105 @@
-module.exports = function(config, postOnlineCallback) {
+var XMPP = require('node-xmpp-client');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
-  var XMPP = require('node-xmpp-client');
-  var client = new XMPP.Client({
-    jid:        config.connection.jid,
-    password:   config.connection.password,
-    transport:  config.connection.transport,
-    wsURL:      config.connection.wsURL
+var XMPPClient = function(config) {
+  this.config = config;
+  this.client = false;
+  this.proxy = false;
+};
+
+util.inherits(XMPPClient, EventEmitter);
+
+XMPPClient.prototype.connect = function(callback) {
+  var _self = this;
+  this.client = new XMPP.Client({
+    jid:        this.config.connection.jid,
+    password:   this.config.connection.password,
+    transport:  this.config.connection.transport,
+    wsURL:      this.config.connection.wsURL
   });
 
-  var proxy = false;
-  if (config.proxy) {
-    proxy = new XMPP.Client({
-      jid:        config.proxy.jid,
-      password:   config.proxy.password,
-      transport:  config.proxy.transport,
-      wsURL:      config.proxy.wsURL
+  this.proxy = false;
+  if (this.config.proxy) {
+    this.proxy = new XMPP.Client({
+      jid:        this.config.proxy.jid,
+      password:   this.config.proxy.password,
+      transport:  this.config.proxy.transport,
+      wsURL:      this.config.proxy.wsURL
     });
 
-    proxy.connection.socket.setTimeout(0);
-    proxy.connection.socket.setKeepAlive(true, 10000);
+    this.proxy.connection.socket.setTimeout(0);
+    this.proxy.connection.socket.setKeepAlive(true, 10000);
 
-    proxy.on('online', function(data) {
+    this.proxy.on('online', function(data) {
     
       console.log('Proxied as ' + data.jid.user + '@' + data.jid.domain + '/' + data.jid.resource);
 
       // send initial presence
-      proxy.send(new XMPP.Stanza('presence', { type: 'available' }));
+      _self.proxy.send(new XMPP.Stanza('presence', { type: 'available' }));
 
-      proxy.send(new XMPP.Stanza('presence', { to: config.room + '/' + config.proxy.nick })
+      _self.proxy.send(new XMPP.Stanza('presence', { to: _self.config.room + '/' + _self.config.proxy.nick })
         .c('x', { xmlns: 'http://jabber.org/protocol/muc' })
         .c('history', { maxchars: 0 })
       );
     });
 
-    client.proxy = proxy;
+    this.client.proxy = this.proxy; // used during cleanup
   }
 
-  client.connection.socket.setTimeout(0);
-  client.connection.socket.setKeepAlive(true, 10000);
+  this.client.connection.socket.setTimeout(0);
+  this.client.connection.socket.setKeepAlive(true, 10000);
 
-  client.on('stanza', function(data) {
-    // console.log(JSON.stringify(data, null, 2));
+  this.client.on('stanza', function(data) {
+    //console.log(JSON.stringify(data, null, 2));
+    _self.emit('stanza', data);
   });
 
-  client.on('error', function(data) {
+  this.client.on('error', function(data) {
     console.log(JSON.stringify(data, null, 2));
   });
 
-  client.on('online', function(data) {
+  this.client.on('online', function(data) {
     
-    config.session = data.jid;
+    _self.config.session = data.jid;
     console.log('Connected as ' + data.jid.user + '@' + data.jid.domain + '/' + data.jid.resource);
 
     // send initial presence
-    client.send(new XMPP.Stanza('presence', { type: 'available' }));
+    _self.client.send(new XMPP.Stanza('presence', { type: 'available' }));
 
-    client.send(new XMPP.Stanza('presence', { to: config.room + '/' + config.nick })
+    _self.client.send(new XMPP.Stanza('presence', { to: _self.config.room + '/' + _self.config.nick })
       .c('x', { xmlns: 'http://jabber.org/protocol/muc' })
       .c('history', { maxchars: 0 })
     );
 
-    if (postOnlineCallback) {
-      postOnlineCallback();
+    if (callback) {
+      callback();
     }
 
   });
-
-  client.sendGroupchat = function(message) {
-    if (proxy) {
-      proxy.send(new XMPP.Stanza('message', { to: config.room, type: 'groupchat' })
-        .c('body').t(message)
-      );
-    } else {
-      client.send(new XMPP.Stanza('message', { to: config.room, type: 'groupchat' })
-        .c('body').t(message)
-      );
-    }
-  };
-
-  client.sendGroupchatAsSelf = function(message) {
-    client.send(new XMPP.Stanza('message', { to: config.room, type: 'groupchat' })
-      .c('body').t(message)
-    );
-  };
-
-  client.sendChat = function(to, message) {
-    // doesn't work
-    client.send(new XMPP.Stanza('message', { to: config.session.domain + '/' + to, type: 'groupchat' })
-      .c('body').t(message)
-    );
-  };
-
-  return client;
 };
+
+XMPPClient.prototype.send = function(stanza) {
+  this.client.send(stanza);
+};
+
+XMPPClient.prototype.sendGroupchat = function(message, asSelf) {
+  if (this.proxy && !asSelf) {
+    this.proxy.send(new XMPP.Stanza('message', { to: this.config.room, type: 'groupchat' })
+      .c('body').t(message)
+    );
+  } else {
+    this.client.send(new XMPP.Stanza('message', { to: this.config.room, type: 'groupchat' })
+      .c('body').t(message)
+    );
+  }
+};
+
+XMPPClient.prototype.end = function() {
+  this.client.end();
+  if (this.proxy) {
+    this.proxy.end();
+  }
+};
+
+module.exports = XMPPClient;
