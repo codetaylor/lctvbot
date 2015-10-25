@@ -26,22 +26,28 @@ var FollowerPlugin = function(params) {
         firstLoad = true;
       }
 
+      var users = false;
       for (var i = 0; i < articles.length; ++i) {
         var article = articles[i];
         var nick = article['title'].toLowerCase();
 
         // if we don't have the nick stored as a follower, store it
         if (!followers[nick]) {
+          if (!users) {
+            users = storage.getItem('users');
+          }
           followers[nick] = {
             timestamp: getTimestamp()
           };
           newFollowers.push(nick);
+          users[config.room + '/' + nick].follower = true;
           dirty = true;
         }
       }
 
       if (dirty) {
         storage.setItem('followers', followers);
+        storage.setItem('users', users);
       }
 
       if (!firstLoad) {
