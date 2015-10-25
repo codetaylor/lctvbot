@@ -6,6 +6,31 @@ $(document).ready(function() {
   var popout = false;
   var timerHandle;
   var buzzerHandle = 0;
+  var newFollowerQueue = [];
+
+  var pulse = function(tl, element, min, max, repeatCount) {
+    tl.to(element, 0.1, { 
+      repeat: repeatCount - 1, 
+      x: Math.floor(Math.random() * (max - min + 1) + min), 
+      delay: 0.1
+    });
+    /*tl.to(element, 0.1, { y: 0, x: 0, delay: (repeatCount + 1) * 0.1});*/
+  };
+
+  setInterval(function() {
+    var nick = newFollowerQueue.shift();
+    if (nick) {
+      var html = tmpl('new_follower_tmpl', {
+        nick: nick
+      });
+      $('.wrapper').append(html);
+      var tl = new TimelineLite();
+      tl.from('#new-follower', 0.25, { opacity: 0 });
+      tl.to('#new-follower p', 1.25, { className: "+=blue-glow", opacity: 1, color: '#fff', ease: Bounce.easeOut });
+      tl.to('#new-follower', 0.25, { opacity: 0, onComplete: function() { $('#new-follower')[0].remove(); } }, "+=2.0");
+      tl.play();
+    }
+  }, 10000);
 
   setInterval(function() {
     var data = queue.shift();
@@ -39,9 +64,8 @@ $(document).ready(function() {
   }, 1000);
 
   socket.on('sk3lls:new_follower', function(data) {
-    console.log(data);
-    // TODO
-
+    // console.log(data);
+    newFollowerQueue.push(data.nick);
   });
   socket.on('sk3lls:focus', function(data) {
     if (data.off) {

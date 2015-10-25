@@ -185,6 +185,32 @@ ul li div.chosen {
     background: url("/images/forum-badge-chosen.png");
 }
 
+#new-follower {
+    position: absolute !important;
+    top: calc(50% - 72px);
+    left: calc(50% - 256px);
+    z-index: 300;
+}
+
+#new-follower p {
+    position: absolute;
+    text-align: center;
+    vertical-align: middle;
+    width: 512px;
+    line-height: 36px;
+    font-size: 48px;
+    font-family: 'Orbitron', sans-serif;
+    color: #00f5ff;
+    opacity: 0;
+}
+
+.blue-glow {
+    text-shadow: 8px 8px 32px #00f5ff,
+    -8px 8px 32px #00f5ff,
+    8px -8px 32px #00f5ff,
+    -8px -8px 32px #00f5ff;
+}
+
 .position {
     position: absolute;
     bottom: 128px;
