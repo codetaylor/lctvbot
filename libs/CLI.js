@@ -8,7 +8,7 @@ var CLI = function() {
 
   var _self = this;
 
-  mkdirp.sync('../logs', function(err) {
+  mkdirp.sync('./logs', function(err) {
     if (err) {
       console.error(err);
     }
@@ -35,7 +35,7 @@ var CLI = function() {
         _self.logFile.end();
       }
       var lf = getLogFile(date);
-      _self.logFile = fs.createWriteStream(lf, { flags: 'a' });
+      _self.logFile = fs.createWriteStream('./logs/' + lf, { flags: 'a' });
     }
   };
 

@@ -40,7 +40,22 @@ var FollowerPlugin = function(params) {
             timestamp: getTimestamp()
           };
           newFollowers.push(nick);
-          users[config.room + '/' + nick].follower = true;
+
+          var user = users[config.room + '/' + nick];
+          if (!user) {
+            user = users[config.room + '/' + nick] = {
+              nick: nick,
+              visits: 0,
+              follower: false,
+              founder: false,
+              greeting: true,
+              role: '',
+              affiliation: '',
+              donations: 0
+            };
+          }
+
+          user.follower = true;
           dirty = true;
         }
       }

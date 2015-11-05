@@ -10,6 +10,7 @@ If you want to maintain this or clean it up or whatever, fork it. Just give me s
 
 ## Features
 
+  * faq
   * kick
   * temporary/permanent ban
   * greeting
@@ -69,6 +70,26 @@ Enables the OBS source titled `AFK`.
 `chat` `console`
 
 Disables the OBS source titled `AFK`.
+
+#### Stream Start/Stop
+
+```
+!stream <'start'|'stop'> [<'preview'>]
+```
+
+`chat` `console`
+
+Starts/stops stream. If `start` is used with `preview`, OBS will start the stream in preview mode.
+
+#### OBS Connect
+
+```
+!obs connect
+```
+
+`chat` `console`
+
+Re-connect to OBS. (ie. if OBS is closed and re-opened while the code is running)
 
 #### Task
 

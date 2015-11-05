@@ -1,0 +1,30 @@
+[
+  {
+    "query" : "What's going on?",
+    "answer" : "I'm making a game called Lodestar: Stygian Skies."
+  },
+  {
+    "query" : "What's it written in?",
+    "answer" : "LSS is written in Java and uses JSON and Javascript for modding."
+  },
+  {
+    "query" : "What engine do you use?",
+    "answer" : "I use a custom engine. Portions of the engine were inspired by or derived from JMonkeyEngine 3."
+  },
+  {
+    "query" : "Can I pre-order it?",
+    "answer" : "Sure can! I've got some Humble Widgets set up - www.sudoplaygames.com/lss/preorder/"
+  },
+  {
+    "query" : "What kind of game is this?",
+    "answer" : "Lodestar: Stygian Skies is a procedural, voxel-based, tactical, sci-fi role-playing game that takes place in the dark, futuristic expanse of the Lodestar Universe. Explore planets, find resources, unlock unit classes, augment your team and engage in turn-based combat on destructible terrain."
+  },
+  {
+    "query" : "What are we listening to?",
+    "answer" : "Free music: musicforprogramming.net"
+  },
+  {
+    "query" : "Can I look at your bot code?",
+    "answer" : "Sure - github.com codetaylor/lctvbot"
+  }
+]

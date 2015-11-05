@@ -72,14 +72,12 @@ var UserPlugin = function(params) {
       return;
     }
 
-    if (user.follower) {
-      client.sendGroupchat(user.nick + '! Thanks again for following!');
-    } else if (user.visits > 2) {
+    if (user.follower || user.visits > 10) {
       client.sendGroupchat('Hey, ' + user.nick + '! What\'s new?');
-    } else if (user.visits > 1) {
+    } else if (user.visits > 2) {
       client.sendGroupchat('Welcome back, ' + user.nick + '!');
     } else {
-      client.sendGroupchat('Welcome to my channel, ' + user.nick + '!');
+      // client.sendGroupchat('Welcome to my channel, ' + user.nick + '!');
     }
   };
 

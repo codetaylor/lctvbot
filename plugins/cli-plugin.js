@@ -17,9 +17,9 @@ var CLIPlugin = function(params) {
   client.on('stanza', function(data) {
     if (data.is('message')) {
       var nick = Util.getNickFrom(data.attrs.from);
-      if (nick != config.proxy.nick) {
+      //if (nick != config.proxy.nick) {
         console.log('*** ' + nick + ': ' + data.getChildText('body'));
-      }
+      //}
     }
   });
 

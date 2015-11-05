@@ -44,7 +44,8 @@ var plugins = [
   'task-plugin',
   'focus-plugin',
   'obs-plugin',
-  'cli-plugin'
+  'cli-plugin',
+  'faq-plugin'
 ];
 
 var storage = require('node-persist');

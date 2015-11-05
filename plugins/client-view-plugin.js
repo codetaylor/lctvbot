@@ -169,33 +169,43 @@ var ClientViewPlugin = function(params) {
     var message = data.getChildText('message');
     var isSelf = data.attrs.from == config.room + '/' + config.nick;
 
+    var users = storage.getItem('users');
+    var user = users[data.attrs.from];
+    if (user.visits < 3) {
+      return;
+    }
+
     if (data.attrs.type == 'unavailable') {
       console.log(data.attrs.from + ' unavailable');
-      UserImage.get(nick, function(image_url) {
-        io.sockets.in(config.room).emit('unavailable', {
-          from: data.attrs.from,
-          to: data.attrs.to,
-          op: isSelf,
-          type: data.attrs.type,
-          message: message,
-          image_url: image_url,
-          user: storage.getItem('users')[data.attrs.from]
+      if (user.visits > 2 || user.follower) {
+        UserImage.get(nick, function(image_url) {
+          io.sockets.in(config.room).emit('unavailable', {
+            from: data.attrs.from,
+            to: data.attrs.to,
+            op: isSelf,
+            type: data.attrs.type,
+            message: message,
+            image_url: image_url,
+            user: storage.getItem('users')[data.attrs.from]
+          });
         });
-      });
+      }
 
     } else {
       console.log(data.attrs.from + ' available');
-      UserImage.get(nick, function(image_url) {
-        io.sockets.in(config.room).emit('available', {
-          from: data.attrs.from,
-          to: data.attrs.to,
-          op: isSelf,
-          type: data.attrs.type,
-          message: message,
-          image_url: image_url,
-          user: storage.getItem('users')[data.attrs.from]
+      if (user.visits > 2 || user.follower) {
+        UserImage.get(nick, function(image_url) {
+          io.sockets.in(config.room).emit('available', {
+            from: data.attrs.from,
+            to: data.attrs.to,
+            op: isSelf,
+            type: data.attrs.type,
+            message: message,
+            image_url: image_url,
+            user: storage.getItem('users')[data.attrs.from]
+          });
         });
-      });
+      }
 
     }
   };

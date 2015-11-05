@@ -6,6 +6,8 @@ var XMPPClient = function(config) {
   this.config = config;
   this.client = false;
   this.proxy = false;
+
+  this.setMaxListeners(20);
 };
 
 util.inherits(XMPPClient, EventEmitter);
